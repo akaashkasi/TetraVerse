@@ -1,6 +1,8 @@
 # Project6
 
-Madhavi: design, back-end, user testing
-Evan: networking, back-end
-Akaash: networking, back-end, github management 
-Tian: publishing sprints, environment setup, user testing
+Name | Role |
+--- | ---
+Madhavi | environment design, back-end, networking, user-testing
+Evan | publishing sprints/videos, environment design, user-testing, audio management
+Akaash | github management, networking, back-end
+Tian | networking, back-end
