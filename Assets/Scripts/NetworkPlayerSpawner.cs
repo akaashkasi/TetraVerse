@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class networkPlayerSpawner : MonoBehaviourPunCallbacks
+public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
     private GameObject spawnedPlayerPrefab;

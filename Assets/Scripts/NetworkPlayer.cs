@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using Photon.Pun;
 using UnityEngine.XR.Interaction.Toolkit;
-public class networkPlayer : MonoBehaviour
+public class NetworkPlayer : MonoBehaviour
 {
     // Start is called before the first frame update
     public Transform head;
