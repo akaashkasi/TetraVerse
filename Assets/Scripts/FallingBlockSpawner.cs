@@ -13,7 +13,7 @@ public class FallingBlockSpawner : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block" };
+        string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         tetrisBlockPrefabsNames = blockNames;
     }
 
@@ -61,6 +61,10 @@ public class FallingBlockSpawner : MonoBehaviourPunCallbacks
     }*/
 
     //TODO: Need to implement synchronization
+    //TODO: ownership verification
+    //TODO: post processing- glow when grabbed
+    //TODO: figure out dimensions - not falling through sides.
+    //TODO: fall at specific rotation
     /*public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
