@@ -44,8 +44,8 @@ public class SnapManager : MonoBehaviourPunCallbacks
         if (!photonView.IsMine)
             return;
 
-        XRGrabInteractable[] tetrisBlocks = FindObjectsOfType<XRGrabInteractable>();
-        foreach (XRGrabInteractable tetrisBlock in tetrisBlocks)
+        XRGrabNetworkInteractable[] tetrisBlocks = FindObjectsOfType<XRGrabNetworkInteractable>();
+        foreach (XRGrabNetworkInteractable tetrisBlock in tetrisBlocks)
         {
             if (IsTouchingFloor(tetrisBlock))
             {
@@ -55,7 +55,7 @@ public class SnapManager : MonoBehaviourPunCallbacks
 
     }
 
-    private bool IsTouchingFloor(XRGrabInteractable tetrisBlock)
+    private bool IsTouchingFloor(XRGrabNetworkInteractable tetrisBlock)
     {
         // Use your logic to determine if the Tetris block is touching the floor.
         // You can use a raycast from the XR Socket Interactor's position.
@@ -68,7 +68,7 @@ public class SnapManager : MonoBehaviourPunCallbacks
         return false;
     }
 
-    private void SnapToGrid(XRGrabInteractable tetrisBlock)
+    private void SnapToGrid(XRGrabNetworkInteractable tetrisBlock)
     {
         Transform tetrisTransform = tetrisBlock.transform;
 
@@ -111,8 +111,8 @@ public class SnapManager : MonoBehaviourPunCallbacks
     private void SyncSnap(Vector3 newPosition)
     {
         // Apply the synchronized position to all Tetris blocks.
-        XRGrabInteractable[] tetrisBlocks = FindObjectsOfType<XRGrabInteractable>();
-        foreach (XRGrabInteractable tetrisBlock in tetrisBlocks)
+        XRGrabNetworkInteractable[] tetrisBlocks = FindObjectsOfType<XRGrabNetworkInteractable>();
+        foreach (XRGrabNetworkInteractable tetrisBlock in tetrisBlocks)
         {
             tetrisBlock.transform.position = newPosition;
         }
