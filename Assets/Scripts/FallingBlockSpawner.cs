@@ -49,6 +49,7 @@ public class FallingBlockSpawner : MonoBehaviourPunCallbacks
         if (rb != null)
         {
             rb.useGravity = true;
+            rb.drag = 2.0f;
         }
 
         // Handle the block spawn as needed on all clients
