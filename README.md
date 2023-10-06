@@ -35,11 +35,13 @@ Sprint 2 Submission
 
 Build/Playtest Instructions
 
-- Make sure SnapManager is unselected (As this is a partial progress work, an error will occur if this is selected). 
+- Clone the branch labeled "sprint 2"
 
-- Go to build settings and select only the "GameRoom," build. This will then open into the game room proper.
+- Open the GameRoom scene from the Scenes folder and make sure SnapManager is unselected (As this is a partial progress work, an error will occur if this is selected). 
 
-- Once the blocks are generated and begin falling from the ceiling, you can grab the blocks by using either of the "grip" triggers on the Oculus controllers that are modeled to looked like hands in-game.  Your "hands" can also be used to rotate the blocks and place them on the ground. Movement and turning is done by utilizing the joysticks on the Oculus controllers.
+- Go to build settings and select only the "GameRoom," to build and run. This will then open into the game room. 
+
+- Blocks will fall from the ceiling approx every 10 seconds. Once the blocks are generated and begin falling from the ceiling, you can grab the blocks by using the "grip" triggers on the Oculus controllers that are modeled to looked like hands in-game.  Your "hands" can also be used to rotate the blocks and place the blocks on the ground. Movement and turning is done by utilizing the joysticks on the Oculus controllers.
 
 Documentation Video Link
 
