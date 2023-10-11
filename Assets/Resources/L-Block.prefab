@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 189809449489866469}
   m_Layer: 0
   m_Name: L-Block
-  m_TagString: Untagged
+  m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 1841635716651335371}
   - component: {fileID: 520202019131588068}
   - component: {fileID: 2182319014053578864}
-  - component: {fileID: 8486841211005774364}
+  - component: {fileID: 4265284260054884949}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -337,7 +337,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8486841211005774364
+--- !u!65 &4265284260054884949
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -369,7 +369,7 @@ GameObject:
   - component: {fileID: 7233089272832576101}
   - component: {fileID: 1480393340258923541}
   - component: {fileID: 3005017078840069293}
-  - component: {fileID: 7472883646128019690}
+  - component: {fileID: 5372450784256129990}
   m_Layer: 0
   m_Name: Cube (3)
   m_TagString: Untagged
@@ -442,7 +442,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7472883646128019690
+--- !u!65 &5372450784256129990
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -474,7 +474,7 @@ GameObject:
   - component: {fileID: 7066276172905139776}
   - component: {fileID: 2404414469929027641}
   - component: {fileID: 4988288017585274924}
-  - component: {fileID: 980982448000830428}
+  - component: {fileID: 8937026655474329785}
   m_Layer: 0
   m_Name: Cube (2)
   m_TagString: Untagged
@@ -547,7 +547,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &980982448000830428
+--- !u!65 &8937026655474329785
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -579,7 +579,7 @@ GameObject:
   - component: {fileID: 6970803462516700945}
   - component: {fileID: 2373545052794469524}
   - component: {fileID: 7503682829268937644}
-  - component: {fileID: 5558714642970761000}
+  - component: {fileID: 4254388253753640061}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -652,7 +652,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5558714642970761000
+--- !u!65 &4254388253753640061
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
