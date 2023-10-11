@@ -5,10 +5,10 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using Photon.Pun;
 
-public class SnapManager : MonoBehaviourPunCallbacks
+public class SnapManager : MonoBehaviourPun
 {
     public Transform snapPoint;  // Assign the snap point transform in the Inspector.
-    public Vector3 gridSize = new Vector3(0.5f, 0.5f, 0.5f); // Size of grid cells.
+    public Vector3 gridSize; // Size of grid cells.
     public LayerMask floorLayer;
 
     // Define the grid positions where Tetris blocks can snap.
