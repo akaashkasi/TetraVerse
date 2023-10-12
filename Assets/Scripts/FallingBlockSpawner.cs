@@ -1,33 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using Photon.Pun;
 
-public class FallingBlockSpawner : MonoBehaviourPunCallbacks
+public class FallingBlockSpawner : MonoBehaviourPun
 {
-    public string[] tetrisBlockPrefabsNames;
-    public float spawnInterval = 8f;
+    private float countdownInterval = 1.0f;
+    private float countdownTime = 3.0f;
+
+    private string[] tetrisBlockPrefabsNames;
+    private float spawnInterval = 8f;
     public float spawnHeight = 10f;
 
-    private float spawnTimer = 0f;
+    private float spawnTimer;
+
 
     private void Start()
     {
+
         string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         tetrisBlockPrefabsNames = blockNames;
     }
-
-    private void Update()
+    private void Update() 
     {
-        // Check if we are the master client (the one responsible for spawning)
         if (PhotonNetwork.IsMasterClient)
         {
             spawnTimer += Time.deltaTime;
-            if (spawnTimer >= spawnInterval)
+            if (countdownTime > 0) //TODO: okay way to check 1 sec?
             {
-                SpawnRandomBlock();
-                spawnTimer = 0f;
+                if (spawnTimer >= countdownInterval)
+                {
+                    SpawnCountdownBlock();
+                    countdownTime--;
+                    spawnTimer = 0f;
+                }
             }
+            else
+            {
+                if (spawnTimer >= spawnInterval)
+                {
+                    SpawnRandomBlock();
+                    spawnTimer = 0f;
+                }
+            }
+
+        }
+    }
+
+    private void SpawnCountdownBlock()
+    {
+        string time = "Num" + ((int) countdownTime).ToString();
+        Vector3 spawnPosition = new Vector3(0, spawnHeight, 0);
+        GameObject newBlock = PhotonNetwork.Instantiate(time, spawnPosition, Quaternion.identity);
+        Rigidbody rb = newBlock.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.useGravity = true;
+            rb.drag = 2.0f;
         }
     }
 
@@ -39,8 +70,6 @@ public class FallingBlockSpawner : MonoBehaviourPunCallbacks
         // Calculate the spawn position above the ceiling
         Vector3 spawnPosition = new Vector3(Random.Range(-2.5f, 2.5f), spawnHeight, Random.Range(-2.5f, 2.5f));
 
-        // Instantiate the chosen prefab and set its position
-        //GameObject newBlock = PhotonNetwork.Instantiate(chosenBlockPrefab.name, spawnPosition, Quaternion.identity);
 
         GameObject newBlock = PhotonNetwork.Instantiate(chosenBlockPrefabName, spawnPosition, Quaternion.identity);
 
@@ -52,37 +81,7 @@ public class FallingBlockSpawner : MonoBehaviourPunCallbacks
             rb.drag = 2.0f;
         }
 
-        // Handle the block spawn as needed on all clients
-       // HandleBlockSpawn(newBlock);
     }
 
-   /** private void HandleBlockSpawn(GameObject block)
-    {
-        // Implement your logic for handling block spawn, e.g., parenting to a game board
-    }*/
-
-    //TODO: Need to implement synchronization
-    //TODO: ownership verification
-    //TODO: post processing- glow when grabbed
-    //TODO: figure out dimensions - not falling through sides.
-    //TODO: fall at specific rotation
-    /*public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            // We are the owner of this object; send data to others.
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-        }
-        else
-        {
-            // We are receiving data from the owner.
-            Vector3 receivedPosition = (Vector3)stream.ReceiveNext();
-            Quaternion receivedRotation = (Quaternion)stream.ReceiveNext();
-
-            // Update the position and rotation of the object on all clients.
-            transform.position = receivedPosition;
-            transform.rotation = receivedRotation;
-        }
-    }*/
+    //TODO: post processing- glow when grabbed, should be scripts on the individual tetris blocks. 
 }
