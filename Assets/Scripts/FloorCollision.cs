@@ -17,12 +17,5 @@ public class FloorCollision : MonoBehaviourPun
             }
 
         }
-        else if (collision.gameObject.tag == "Block")
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                collision.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = false;
-            }
-        }
     }
 }
