@@ -11,6 +11,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private float countdownTime = 3.0f;
 
     private string[] tetrisBlockPrefabsNames;
+    private float[] xzRangePositions;
     private float spawnInterval = 8f;
     public float spawnHeight = 10f;
 
@@ -20,7 +21,13 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private void Start()
     {
 
-        string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
+        // string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
+        string[] blockNames = { "I-Block" };
+
+        float[] xzRange = { -1.25f, -0.75f, -0.25f, 0.25f, 0.75f, 1.25f};
+
+        xzRangePositions = xzRange;
+
         tetrisBlockPrefabsNames = blockNames;
     }
     private void Update() 
@@ -68,8 +75,13 @@ public class FallingBlockSpawner : MonoBehaviourPun
         string chosenBlockPrefabName = tetrisBlockPrefabsNames[randomIndex];
 
         // Calculate the spawn position above the ceiling
-        Vector3 spawnPosition = new Vector3(Random.Range(-2.5f, 2.5f), spawnHeight, Random.Range(-2.5f, 2.5f));
 
+        int randomXIndex = Random.Range(0, xzRangePositions.Length);
+        float xPos = xzRangePositions[randomXIndex];
+        int randomZIndex = Random.Range(0, xzRangePositions.Length);
+        float zPos = xzRangePositions[randomZIndex];
+
+        Vector3 spawnPosition = new Vector3(xPos, spawnHeight, zPos);
 
         GameObject newBlock = PhotonNetwork.Instantiate(chosenBlockPrefabName, spawnPosition, Quaternion.identity);
 
@@ -78,7 +90,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         if (rb != null)
         {
             rb.useGravity = true;
-            rb.drag = 2.0f;
+            rb.drag = 3.0f;
         }
 
     }
