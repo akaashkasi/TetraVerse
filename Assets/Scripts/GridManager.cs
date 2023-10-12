@@ -10,6 +10,8 @@ public class GridManager : MonoBehaviourPun
     private int width = 10;
     private int depth = 10;
 
+    private int layersCompleted = 0;
+
     private void Start()
     {
 
@@ -38,6 +40,7 @@ public class GridManager : MonoBehaviourPun
                 publicGrid[i, j] = 0;
             }
         }
+        layersCompleted++;
     }
 
     public bool FloorCompletelyOccupied()
