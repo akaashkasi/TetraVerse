@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.XR.Interaction.Toolkit;
+using System;
 
 public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 {
-    //todo: evan add public AudioSource audio
+    //todo: Evan add public AudioSource audio
+
+    public AudioSource grabSound; 
+
     public float gridSize = 0.5f; // Size of each grid square
     public float offset = 0.5f / 2.0f;
 
@@ -14,6 +18,32 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
     public float maxX = 1.5f;  // Maximum X bound
     public float minZ = -2.25f; // Minimum Z bound
     public float maxZ = 2.25f;  // Maximum Z bound
+
+    private XRGrabNetworkInteractable grabInteractable;
+
+    public void Start()
+    {
+        grabInteractable = GetComponent<XRGrabNetworkInteractable>();
+
+        grabInteractable.selectEntered.AddListener(PlaySound);
+    }
+    /**public void Update()
+    {
+        if (this.GetComponent<XRGrabNetworkInteractable>().isSelected)
+        {
+            PhotonView PV = this.GetComponent<PhotonView>();
+
+            if (PV.IsMine) // If the photon view component that I am interacting with, is owned by me
+            {
+                //TODO: glow by Akaash
+            }
+        }
+    }*/
+
+    public void PlaySound(SelectEnterEventArgs arg0)
+    {
+        grabSound.Play();
+    }
 
     public void OnCollisionEnter(Collision collision)
     {
@@ -27,7 +57,11 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
                 //TODO: jumping more than needed
                 //TODO: shaking/buggy
                 //TODO: do I need to customize the script for each of the blocks?
-                Vector3 snapPosition = new Vector3(Mathf.Round(collisionPoint.x / gridSize) * gridSize + offset, 0.25f,Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);
+                //Vector3 snapPosition = new Vector3(Mathf.Round(collisionPoint.x / gridSize) * gridSize + offset, 0.25f,Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);
+                Vector3 snapPosition = new Vector3(
+                     Mathf.Round(collisionPoint.x / gridSize) * gridSize + offset,
+                     Mathf.Round(collisionPoint.y / gridSize) * gridSize + offset,
+                     Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);
                 Debug.Log("Snap pos" + snapPosition);
 
                 //TODO: don't want it to snap to being outside
@@ -36,25 +70,31 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 
                 this.transform.position = snapPosition;
 
-                //TODO: evan play sound
 
-                //want it to stay in same rotation
-                //TODO: rotation not working
-                float angle = Mathf.Round(this.transform.rotation.eulerAngles.y / 90.0f) * 90.0f;
-                Quaternion newRotation = Quaternion.Euler(0, angle, 0);
+                //2. Stay in same rotation
+                float anglex = Mathf.Round(this.transform.rotation.eulerAngles.x / 90.0f) * 90.0f;
+                float angley = Mathf.Round(this.transform.rotation.eulerAngles.y / 90.0f) * 90.0f;
+                float anglez = Mathf.Round(this.transform.rotation.eulerAngles.z / 90.0f) * 90.0f;
+                Quaternion newRotation = Quaternion.Euler(anglex, angley, anglez);
+
                 this.transform.rotation = newRotation;
 
-                //Freeze it so it doesn't move anymore
-                this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
                 
 
-                //2. set the corresponding floor positions to occupied
-                //int gridX = Mathf.FloorToInt(snapPosition.x / gridSize);
-                //int gridY = Mathf.FloorToInt(snapPosition.z / gridSize);
-                //TODO: but it could be more than just one position!
-                //grid[gridX, gridY] = true;
+                //TODO: Evan play sound
 
-                //3. disable grab:
+                //3. Freeze it so it doesn't move anymore
+                this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+
+                //4. Visual indication of "Freeze" via lighter color
+                //TODO: error
+                Color materialColor = this.GetComponentInChildren<Material>().color;
+                materialColor.r += 0.3f;
+                materialColor.r = Mathf.Clamp01(materialColor.r);
+
+                //4. set the corresponding floor positions to occupied and compute points
+
+                //5. disable grab:
                 this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = false;
             }
         }
