@@ -328,6 +328,7 @@ GameObject:
   - component: {fileID: 8554565751290935943}
   - component: {fileID: -901002516248863086}
   - component: {fileID: -3225875980243398534}
+  - component: {fileID: 5926156766449682455}
   m_Layer: 0
   m_Name: S-Block
   m_TagString: Block
@@ -568,6 +569,25 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &5926156766449682455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8110147265883695504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469fab2ced55348c3b53bf314a5445b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabSound: {fileID: 0}
+  gridSize: 0.5
+  offset: 0.25
+  minX: -1.5
+  maxX: 1.5
+  minZ: -2.25
+  maxZ: 2.25
 --- !u!1 &9153067861731215904
 GameObject:
   m_ObjectHideFlags: 0

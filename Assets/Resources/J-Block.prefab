@@ -581,7 +581,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469fab2ced55348c3b53bf314a5445b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grabSound: {fileID: 0}
   gridSize: 0.5
+  offset: 0.25
+  minX: -1.5
+  maxX: 1.5
+  minZ: -1.5
+  maxZ: 1.5
 --- !u!1 &9153067861731215904
 GameObject:
   m_ObjectHideFlags: 0
