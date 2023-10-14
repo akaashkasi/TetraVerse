@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -138261025130513948}
   - component: {fileID: -6012932973786241418}
   - component: {fileID: 189809449489866469}
+  - component: {fileID: -5192500903925100318}
   m_Layer: 0
   m_Name: L-Block
   m_TagString: Block
@@ -253,6 +254,25 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &-5192500903925100318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531572155765658975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469fab2ced55348c3b53bf314a5445b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabSound: {fileID: 0}
+  gridSize: 0.5
+  offset: 0.25
+  minX: -1.5
+  maxX: 1.5
+  minZ: -2.25
+  maxZ: 2.25
 --- !u!1 &1132668949648653485
 GameObject:
   m_ObjectHideFlags: 0
