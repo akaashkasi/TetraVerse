@@ -329,7 +329,8 @@ GameObject:
   - component: {fileID: -901002516248863086}
   - component: {fileID: -3225875980243398534}
   - component: {fileID: 5326878060463671650}
-  - component: {fileID: -2649055168618750474}
+  - component: {fileID: 6981031971480136070}
+  - component: {fileID: 1755906087680636429}
   m_Layer: 0
   m_Name: I-Block
   m_TagString: Block
@@ -582,14 +583,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469fab2ced55348c3b53bf314a5445b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grabSound: {fileID: -2649055168618750474}
+  grabSound: {fileID: 0}
   gridSize: 0.5
   offset: 0.25
   minX: -1.5
   maxX: 1.5
   minZ: -1.5
   maxZ: 1.5
---- !u!82 &-2649055168618750474
+--- !u!114 &6981031971480136070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8110147265883695504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48950f73c6d3f9a4cb7da06ca71f68d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioPlayer: {fileID: 0}
+--- !u!82 &1755906087680636429
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -599,7 +613,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: e81bbe537c0ba45b3aeb48f1e77d7511, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 2d0cf106680c08240b609c2abec20f15, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
