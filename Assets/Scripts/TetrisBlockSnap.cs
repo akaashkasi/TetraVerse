@@ -23,9 +23,9 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 
     public void Start()
     {
-        grabInteractable = GetComponent<XRGrabNetworkInteractable>();
+        grabInteractable = this.GetComponent<XRGrabNetworkInteractable>();
 
-        grabInteractable.selectEntered.AddListener(PlaySound);
+        grabInteractable.selectEntered.AddListener(PlayGrabSound);
     }
     /**public void Update()
     {
@@ -40,7 +40,7 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
         }
     }*/
 
-    public void PlaySound(SelectEnterEventArgs arg0)
+    public void PlayGrabSound(SelectEnterEventArgs arg0)
     {
         grabSound.Play();
     }
@@ -86,9 +86,8 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
                 //3. Freeze it so it doesn't move anymore
                 this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 
-                //4. Visual indication of "Freeze" via lighter color
-                //TODO: error
-                Color materialColor = this.GetComponentInChildren<Material>().color;
+                //4. Visual indication of "Freeze" via lighter color.
+                Color materialColor = this.GetComponent<Material>().color;
                 materialColor.r += 0.3f;
                 materialColor.r = Mathf.Clamp01(materialColor.r);
 

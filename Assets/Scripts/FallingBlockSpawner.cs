@@ -7,7 +7,7 @@ using Photon.Pun;
 
 public class FallingBlockSpawner : MonoBehaviourPun
 {
-    private const float countdownInterval = 1.0f;
+    private const float countdownInterval = 1.2f;
     private float countdownTime = 3.0f;
 
     private string[] tetrisBlockPrefabsNames;
@@ -44,21 +44,21 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private const int rotation90 = 90;
     private const int rotation180 = 180;
 
+    public TMP_Text levelText;
+
     private void Start()
     {
         curLevel = Level0;
         numBlocksSpawned = 0;
         currSpawnInterval = level0SpawnInterval; //initial interval
 
-        //string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
-        string[] blockNames = { "I-Block"};
+        string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         tetrisBlockPrefabsNames = blockNames;
 
         int[] rotations = { 0, rotation90, rotation180};
         blockRotations = rotations;
 
-        //float[] xzRange = { -0.75f, -0.25f, 0.25f, 0.75f}; //TODO: figure out how to do the range better. potentially dictionary for each block- array of possible values
-        float[] xzRange = { -1.25f };
+        float[] xzRange = { -1.25f, -0.75f, -0.25f, 0.25f, 0.75f, 1.25f};
         xzRangePositions = xzRange;
 
     }
@@ -90,16 +90,19 @@ public class FallingBlockSpawner : MonoBehaviourPun
                     {
                         curLevel = Level3;
                         currSpawnInterval = level3SpawnInterval;
+                        levelText.text = "Level: 3";
                     }
                     else if (numBlocksSpawned > level2NumBlocksThreshold)
                     {
                         curLevel = Level2;
                         currSpawnInterval = level2SpawnInterval;
+                        levelText.text = "Level: 2";
                     }
                     else if (numBlocksSpawned > level1NumBlocksThreshold)
                     {
                         curLevel = Level1;
                         currSpawnInterval = level1SpawnInterval;
+                        levelText.text = "Level: 1";
                     }
                 }
                 
@@ -111,7 +114,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private void SpawnCountdownBlock()
     {
         string time = "Num" + ((int) countdownTime).ToString();
-        Vector3 spawnPosition = new Vector3(-0.5f, spawnHeight, 0.75f);
+        Vector3 spawnPosition = new Vector3(-0.75f, spawnHeight, 0.75f);
         GameObject newBlock = PhotonNetwork.Instantiate(time, spawnPosition, Quaternion.identity);
         Rigidbody rb = newBlock.GetComponent<Rigidbody>();
 
