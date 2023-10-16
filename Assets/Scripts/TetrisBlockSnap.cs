@@ -87,9 +87,14 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
                 this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 
                 //4. Visual indication of "Freeze" via lighter color.
-                Color materialColor = this.GetComponent<Material>().color;
-                materialColor.r += 0.3f;
-                materialColor.r = Mathf.Clamp01(materialColor.r);
+                /**foreach (Transform child in this.gameObject.transform)
+                {
+                    Renderer childRenderer = child.GetComponent<Renderer>();
+                    Material childMaterial = childRenderer.materials[0];
+                    Color materialColor = childMaterial.color;
+                    materialColor.a += 0.3f;
+                    materialColor.a = Mathf.Clamp01(materialColor.a);
+                }*/
 
                 //4. set the corresponding floor positions to occupied and compute points
 
