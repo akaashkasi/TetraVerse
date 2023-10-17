@@ -7,28 +7,67 @@ using Photon.Pun;
 
 public class FallingBlockSpawner : MonoBehaviourPun
 {
-    private float countdownInterval = 1.0f;
+    private const float countdownInterval = 1.2f;
     private float countdownTime = 3.0f;
 
     private string[] tetrisBlockPrefabsNames;
-    private float spawnInterval = 8f;
-    public float spawnHeight = 10f;
+    private float[] xzRangePositions;
+    private int[] blockRotations;
+
+    private const float spawnHeight = 6.5f;
 
     private float spawnTimer;
 
+    private const int Level0 = 0;
+    private const int Level1 = 1;
+    private const int Level2 = 2;
+    private const int Level3 = 3;
+
+    private int curLevel;
+
+    private int numBlocksSpawned;
+    private int level1NumBlocksThreshold = 2; //15
+    private int level2NumBlocksThreshold = 4; //25
+    private int level3NumBlocksThreshold = 6; //35
+
+    private float currSpawnInterval;
+    private const float level0SpawnInterval = 10f; 
+    private const float level1SpawnInterval = 8f; 
+    private const float level2SpawnInterval = 6f;
+    private const float level3SpawnInterval = 4f; 
+
+    private const float level0LinearDrag = 20.0f; //TODO: fine tune values
+    private const float level1LinearDrag = 10.0f;
+    private const float level2LinearDrag = 5.0f;
+    private const float level3LinearDrag = 3.0f;
+
+    private const int rotation90 = 90;
+    private const int rotation180 = 180;
+
+    public TMP_Text levelText;
 
     private void Start()
     {
+        curLevel = Level0;
+        numBlocksSpawned = 0;
+        currSpawnInterval = level0SpawnInterval; //initial interval
 
         string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         tetrisBlockPrefabsNames = blockNames;
+
+        int[] rotations = { 0, rotation90, rotation180};
+        blockRotations = rotations;
+
+        float[] xzRange = { -1.25f, -0.75f, -0.25f, 0.25f, 0.75f, 1.25f};
+        xzRangePositions = xzRange;
+
     }
     private void Update() 
     {
         if (PhotonNetwork.IsMasterClient)
         {
             spawnTimer += Time.deltaTime;
-            if (countdownTime > 0) //TODO: okay way to check 1 sec?
+            if (countdownTime > 0) 
             {
                 if (spawnTimer >= countdownInterval)
                 {
@@ -39,11 +78,34 @@ public class FallingBlockSpawner : MonoBehaviourPun
             }
             else
             {
-                if (spawnTimer >= spawnInterval)
+                if (spawnTimer >= currSpawnInterval)
                 {
                     SpawnRandomBlock();
                     spawnTimer = 0f;
+
+                    numBlocksSpawned++;
+
+                    //After a set number of blocks which have been spawned, move onto next "level"
+                    if (numBlocksSpawned > level3NumBlocksThreshold)
+                    {
+                        curLevel = Level3;
+                        currSpawnInterval = level3SpawnInterval;
+                        levelText.text = "Level: 3";
+                    }
+                    else if (numBlocksSpawned > level2NumBlocksThreshold)
+                    {
+                        curLevel = Level2;
+                        currSpawnInterval = level2SpawnInterval;
+                        levelText.text = "Level: 2";
+                    }
+                    else if (numBlocksSpawned > level1NumBlocksThreshold)
+                    {
+                        curLevel = Level1;
+                        currSpawnInterval = level1SpawnInterval;
+                        levelText.text = "Level: 1";
+                    }
                 }
+                
             }
 
         }
@@ -52,13 +114,16 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private void SpawnCountdownBlock()
     {
         string time = "Num" + ((int) countdownTime).ToString();
-        Vector3 spawnPosition = new Vector3(0, spawnHeight, 0);
+        Vector3 spawnPosition = new Vector3(-0.75f, spawnHeight, 0.75f);
         GameObject newBlock = PhotonNetwork.Instantiate(time, spawnPosition, Quaternion.identity);
         Rigidbody rb = newBlock.GetComponent<Rigidbody>();
+
         if (rb != null)
         {
             rb.useGravity = true;
-            rb.drag = 2.0f;
+            newBlock.transform.rotation = Quaternion.Euler(90, 180, 0);
+            rb.constraints = RigidbodyConstraints.FreezeRotationX;
+            rb.drag = 3.0f;
         }
     }
 
@@ -67,21 +132,44 @@ public class FallingBlockSpawner : MonoBehaviourPun
         int randomIndex = Random.Range(0, tetrisBlockPrefabsNames.Length);
         string chosenBlockPrefabName = tetrisBlockPrefabsNames[randomIndex];
 
-        // Calculate the spawn position above the ceiling
-        Vector3 spawnPosition = new Vector3(Random.Range(-2.5f, 2.5f), spawnHeight, Random.Range(-2.5f, 2.5f));
+        //1. Determine drop position
+        int randomXIndex = Random.Range(0, xzRangePositions.Length);
+        float xPos = xzRangePositions[randomXIndex];
+        int randomZIndex = Random.Range(0, xzRangePositions.Length);
+        float zPos = xzRangePositions[randomZIndex];
 
+        Vector3 spawnPosition = new Vector3(xPos, spawnHeight, zPos);
+
+        //2. Determine drop rotation
+        int randomRotationIndexZ = Random.Range(0, blockRotations.Length);
+        int zRotation = blockRotations[randomRotationIndexZ];
 
         GameObject newBlock = PhotonNetwork.Instantiate(chosenBlockPrefabName, spawnPosition, Quaternion.identity);
 
-        // Apply gravity to make the block fall
         Rigidbody rb = newBlock.GetComponent<Rigidbody>();
         if (rb != null)
         {
+            newBlock.transform.rotation = Quaternion.Euler(0, 0, zRotation);
             rb.useGravity = true;
-            rb.drag = 2.0f;
+
+            //3. Change the pace at which the object falls based on the level
+            if (curLevel == Level0)
+            {
+                rb.drag = level0LinearDrag;
+            }
+            else if (curLevel == Level1)
+            {
+                rb.drag = level1LinearDrag;
+            }
+            else if (curLevel == Level2)
+            {
+                rb.drag = level2LinearDrag;
+            }
+            else //Level 3
+            {
+                rb.drag = level3LinearDrag;
+            }
         }
 
-    }
-
-    //TODO: post processing- glow when grabbed, should be scripts on the individual tetris blocks. 
+    } 
 }

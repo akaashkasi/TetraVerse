@@ -22,6 +22,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Connected to Server.");
         base.OnConnectedToMaster();
+        //PhotonNetwork.JoinLobby();
+
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 4;
         roomOptions.IsVisible = true;
