@@ -7,7 +7,7 @@ using System;
 
 public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 {
-    //todo: Evan add public AudioSource audio
+    public AudioSource snapSound;
 
     public AudioSource grabSound; 
 
@@ -79,9 +79,7 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 
                 this.transform.rotation = newRotation;
 
-                
-
-                //TODO: Evan play sound
+                snapSound.Play();
 
                 //3. Freeze it so it doesn't move anymore
                 this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
