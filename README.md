@@ -33,7 +33,7 @@ Individual Member Contributions
 
 Additions
 
-- A vertical jumping system has been implemented within the game and it is binded to the trigger buttons on the Oculus controllers.
+- A vertical jumping system has been implemented within the game and it is binded to the trigger buttons on the Oculus controllers. You may need to move first using the joystick before pressing "X" on the Left Controller to jump. 
 
 - A "3,2,1" countdown sequence has been added to the game and it is utilized to signal the spawning of blocks within the game room.
 
