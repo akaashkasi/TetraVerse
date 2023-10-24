@@ -13,7 +13,7 @@ Build/Playtest Instructions
 
 - Clone the branch labeled "sprint-3".
 
-- Open the GameRoom scene from the Scenes folder and make sure SnapManager is unselected.
+- Open the GameRoom scene from the Scenes folder.
 
 - Go to build settings and select only the "GameRoom," to build and run. This will then open into the game room. 
 
