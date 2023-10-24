@@ -55,8 +55,6 @@ Bug Fixes
 
 - Players can no longer utilize the continuous motion system to move outside of the game room.
 
-- Blocks can no longer go through the walls of the game room.
-
 Unity Issues
 
 - We were not able to determine how the adjust the lighting in the room in order to prevent the walls from appearing different.
