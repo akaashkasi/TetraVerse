@@ -8,6 +8,7 @@ TagManager:
   - Num
   - Block
   - Wall
+  - InvisibleWall
   layers:
   - Default
   - TransparentFX

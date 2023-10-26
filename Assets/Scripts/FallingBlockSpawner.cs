@@ -36,13 +36,15 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private const float level2SpawnInterval = 6f;
     private const float level3SpawnInterval = 4f; 
 
-    private const float level0LinearDrag = 20.0f; //TODO: fine tune values
-    private const float level1LinearDrag = 10.0f;
-    private const float level2LinearDrag = 5.0f;
-    private const float level3LinearDrag = 3.0f;
+    private const float level0LinearDrag = 20.0f; 
+    private const float level1LinearDrag = 15.0f;
+    private const float level2LinearDrag = 10.0f;
+    private const float level3LinearDrag = 7.0f;
 
     private const int rotation90 = 90;
     private const int rotation180 = 180;
+
+    private bool firstSpawn = true;
 
     public TMP_Text levelText;
 
@@ -55,7 +57,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         tetrisBlockPrefabsNames = blockNames;
 
-        int[] rotations = { 0, rotation90, rotation180};
+        int[] rotations = { 0, rotation90, rotation180}; //TODO: should I eliminate one of the rotations?
         blockRotations = rotations;
 
         float[] xzRange = { -1.25f, -0.75f, -0.25f, 0.25f, 0.75f, 1.25f};
@@ -67,6 +69,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         if (PhotonNetwork.IsMasterClient)
         {
             spawnTimer += Time.deltaTime;
+
             if (countdownTime > 0) 
             {
                 if (spawnTimer >= countdownInterval)
@@ -80,6 +83,13 @@ public class FallingBlockSpawner : MonoBehaviourPun
             {
                 if (spawnTimer >= currSpawnInterval)
                 {
+                    if (countdownTime == 0 && firstSpawn) //delete the wall on the first spawned block
+                    {
+                        GameObject wall = GameObject.FindGameObjectWithTag("InvisibleWall");
+                        Destroy(wall);
+                        firstSpawn = false; //don't want this to execute more than once
+                    }
+
                     SpawnRandomBlock();
                     spawnTimer = 0f;
 
@@ -114,7 +124,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private void SpawnCountdownBlock()
     {
         string time = "Num" + ((int) countdownTime).ToString();
-        Vector3 spawnPosition = new Vector3(-0.75f, spawnHeight, 0.75f);
+        Vector3 spawnPosition = new Vector3(-0.75f, spawnHeight, 2.0f);
         GameObject newBlock = PhotonNetwork.Instantiate(time, spawnPosition, Quaternion.identity);
         Rigidbody rb = newBlock.GetComponent<Rigidbody>();
 
