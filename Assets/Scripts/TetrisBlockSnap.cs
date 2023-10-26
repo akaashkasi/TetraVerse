@@ -79,24 +79,16 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 
                 this.transform.rotation = newRotation;
 
+                //3. Play snap sound
                 snapSound.Play();
 
-                //3. Freeze it so it doesn't move anymore
+                //4. Freeze it so it doesn't move anymore
                 this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 
-                //4. Visual indication of "Freeze" via lighter color.
-                /**foreach (Transform child in this.gameObject.transform)
-                {
-                    Renderer childRenderer = child.GetComponent<Renderer>();
-                    Material childMaterial = childRenderer.materials[0];
-                    Color materialColor = childMaterial.color;
-                    materialColor.a += 0.3f;
-                    materialColor.a = Mathf.Clamp01(materialColor.a);
-                }*/
+                //5. Visual indication of "Freeze" via transparency
+                FreezeColorChange();
 
-                //4. set the corresponding floor positions to occupied and compute points
-
-                //5. disable grab:
+                //6. disable grab:
                 this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = false;
             }
         }
@@ -104,6 +96,28 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
         {
             //transform so long as no part of the block is inside another block
         }*/
+    }
+
+    //TODO: not working!
+    private void FreezeColorChange()
+    {
+        Renderer[] childRenderers = GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer childRenderer in childRenderers)
+        {
+            Color originalColor = childRenderer.material.color;
+
+            Color lighterColor = new Color(
+            originalColor.r + 0.2f * (1 - originalColor.r),
+            originalColor.g + 0.2f * (1 - originalColor.g),
+            originalColor.b + 0.2f * (1 - originalColor.b),
+            originalColor.a
+            );
+            //currentColor.a = 0.3f; //try full transparency just to see if it works
+            // Apply the new color with adjusted alpha
+            childRenderer.material.color = lighterColor;
+
+        }
     }
 
 }
