@@ -5,10 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Floor
-  - Num
   - Block
   - Wall
   - InvisibleWall
+  - Num1
+  - Num2
+  - Num3
+  - Num
   layers:
   - Default
   - TransparentFX
