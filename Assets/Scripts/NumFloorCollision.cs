@@ -45,6 +45,7 @@ public class NumFloorCollision : MonoBehaviourPun
                     activated = false;
                 }
             }
+           
         }
     }
 }
