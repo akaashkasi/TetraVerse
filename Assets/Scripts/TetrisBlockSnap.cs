@@ -5,8 +5,10 @@ using Photon.Pun;
 using UnityEngine.XR.Interaction.Toolkit;
 using System;
 
+
 public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 {
+
     //todo: Evan add public AudioSource audio
 
     public AudioSource grabSound; 
@@ -18,6 +20,9 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
     public float maxX = 1.5f;  // Maximum X bound
     public float minZ = -2.25f; // Minimum Z bound
     public float maxZ = 2.25f;  // Maximum Z bound
+
+    public bool isGrabbed = false;
+
 
     private XRGrabNetworkInteractable grabInteractable;
 
@@ -39,6 +44,12 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
             }
         }
     }*/
+
+    public void Update() {
+        if (this.GetComponent<XRGrabNetworkInteractable>().isSelected) {
+            isGrabbed = true;
+        }
+    }
 
     public void PlaySound(SelectEnterEventArgs arg0)
     {
@@ -79,7 +90,8 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 
                 this.transform.rotation = newRotation;
 
-                
+                // Debug.Log("Collision pos");
+                // Debug.Log("Points" + tetrisManager.getPoints());
 
                 //TODO: Evan play sound
 
@@ -87,12 +99,16 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
                 this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 
                 //4. Visual indication of "Freeze" via lighter color
-                //TODO: error
-                Color materialColor = this.GetComponentInChildren<Material>().color;
-                materialColor.r += 0.3f;
-                materialColor.r = Mathf.Clamp01(materialColor.r);
 
                 //4. set the corresponding floor positions to occupied and compute points
+                TetrisManager targetScript = GameObject.Find("TetrisManager").GetComponent<TetrisManager>();
+                if (targetScript == null) {
+                    // raise a error
+                }
+
+                targetScript.addPoints(5);
+
+                Debug.Log(targetScript.getPoints());
 
                 //5. disable grab:
                 this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = false;
