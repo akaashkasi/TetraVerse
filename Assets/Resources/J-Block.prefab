@@ -592,6 +592,7 @@ MonoBehaviour:
   maxX: 1.5
   minZ: -1.5
   maxZ: 1.5
+  isGrabbed: 0
 --- !u!82 &-8083152760402354834
 AudioSource:
   m_ObjectHideFlags: 0
