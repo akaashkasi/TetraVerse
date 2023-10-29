@@ -26,20 +26,20 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private int curLevel;
 
     private int numBlocksSpawned;
-    private int level1NumBlocksThreshold = 2; //15
-    private int level2NumBlocksThreshold = 4; //25
-    private int level3NumBlocksThreshold = 6; //35
+    private int level1NumBlocksThreshold = 3; //15
+    private int level2NumBlocksThreshold = 5; //25
+    private int level3NumBlocksThreshold = 10; //35
 
     private float currSpawnInterval;
-    private const float level0SpawnInterval = 10f; 
-    private const float level1SpawnInterval = 8f; 
-    private const float level2SpawnInterval = 6f;
-    private const float level3SpawnInterval = 4f; 
+    private const float level0SpawnInterval = 12f;
+    private const float level1SpawnInterval = 10f; 
+    private const float level2SpawnInterval = 9f;
+    private const float level3SpawnInterval = 8f; 
 
     private const float level0LinearDrag = 20.0f; 
-    private const float level1LinearDrag = 15.0f;
-    private const float level2LinearDrag = 10.0f;
-    private const float level3LinearDrag = 7.0f;
+    private const float level1LinearDrag = 17.0f;
+    private const float level2LinearDrag = 15.0f;
+    private const float level3LinearDrag = 10.0f;
 
     private const int rotation90 = 90;
     private const int rotation180 = 180;
@@ -47,6 +47,8 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private bool firstSpawn = true;
 
     public TMP_Text levelText;
+
+    public AudioSource levelUp;
 
     private void Start()
     {
@@ -57,10 +59,10 @@ public class FallingBlockSpawner : MonoBehaviourPun
         string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         tetrisBlockPrefabsNames = blockNames;
 
-        int[] rotations = { 0, rotation90, rotation180}; //TODO: should I eliminate one of the rotations?
+        int[] rotations = { 0, rotation90, rotation180}; 
         blockRotations = rotations;
 
-        float[] xzRange = { -1.25f, -0.75f, -0.25f, 0.25f, 0.75f, 1.25f};
+        float[] xzRange = { -1.25f, -0.75f, -0.25f, 0.25f, 0.75f, 1.25f}; //-1.25f, 1.25f
         xzRangePositions = xzRange;
 
     }
@@ -98,18 +100,33 @@ public class FallingBlockSpawner : MonoBehaviourPun
                     //After a set number of blocks which have been spawned, move onto next "level"
                     if (numBlocksSpawned > level3NumBlocksThreshold)
                     {
+                        if (numBlocksSpawned == level3NumBlocksThreshold + 1) //only play once
+                        {
+                            levelUp.Play();
+                        }
                         curLevel = Level3;
                         currSpawnInterval = level3SpawnInterval;
                         levelText.text = "Level: 3";
+
+                        
                     }
                     else if (numBlocksSpawned > level2NumBlocksThreshold)
                     {
+                        if (numBlocksSpawned == level2NumBlocksThreshold + 1)
+                        {
+                            levelUp.Play();
+                        }
                         curLevel = Level2;
                         currSpawnInterval = level2SpawnInterval;
                         levelText.text = "Level: 2";
+
                     }
                     else if (numBlocksSpawned > level1NumBlocksThreshold)
                     {
+                        if (numBlocksSpawned == level1NumBlocksThreshold + 1)
+                        {
+                            levelUp.Play();
+                        }
                         curLevel = Level1;
                         currSpawnInterval = level1SpawnInterval;
                         levelText.text = "Level: 1";
@@ -149,7 +166,8 @@ public class FallingBlockSpawner : MonoBehaviourPun
         float zPos = xzRangePositions[randomZIndex];
 
         Vector3 spawnPosition = new Vector3(xPos, spawnHeight, zPos);
-
+        Debug.Log("Spawn pos" + spawnPosition);
+         
         //2. Determine drop rotation
         int randomRotationIndexZ = Random.Range(0, blockRotations.Length);
         int zRotation = blockRotations[randomRotationIndexZ];

@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 860237535197574263}
   m_Layer: 0
   m_Name: T-Block
-  m_TagString: Block
+  m_TagString: T-Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -12,6 +12,13 @@ TagManager:
   - Num2
   - Num3
   - Num
+  - I-Block
+  - J-Block
+  - L-Block
+  - S-Block
+  - Square-Block
+  - T-Block
+  - Z-Block
   layers:
   - Default
   - TransparentFX
