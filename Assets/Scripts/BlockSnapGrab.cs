@@ -20,17 +20,30 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
     public float maxZ = 2.25f;  // Maximum Z bound
 
     private XRGrabNetworkInteractable grabInteractable;
+
+    private TetrisManager targetScript;
+
+    public bool isGrabbed = false;
+
     private PhotonView PV;
 
     public void Start()
     {
         grabInteractable = this.GetComponent<XRGrabNetworkInteractable>();
 
+        targetScript = GameObject.Find("TetrisManager").GetComponent<TetrisManager>();
+
         grabInteractable.selectEntered.AddListener(PlayGrabSound);
         grabInteractable.selectEntered.AddListener(Glow);
         grabInteractable.selectExited.AddListener(RemoveGlow);
 
         PV = this.GetComponent<PhotonView>();
+    }
+
+    public void Update() {
+        if (grabInteractable.isSelected) {
+            isGrabbed = true;
+        }
     }
 
     public void Glow(SelectEnterEventArgs arg0)
@@ -145,6 +158,12 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 
                 //5. Visual indication of "Freeze" via transparency
                 FreezeColorChange();
+
+                targetScript.addPoints(5);
+                if (isGrabbed) {
+                    targetScript.addPoints(10);
+                }
+                Debug.Log(targetScript.getPoints());
 
                 //6. disable grab:
                 this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = false;
