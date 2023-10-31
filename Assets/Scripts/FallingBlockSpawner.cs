@@ -11,6 +11,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private float countdownTime = 3.0f;
 
     private string[] tetrisBlockPrefabsNames;
+
     private float[] xzRangePositions;
     private int[] blockRotations;
 
@@ -26,9 +27,9 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private int curLevel;
 
     private int numBlocksSpawned;
-    private int level1NumBlocksThreshold = 3; //15
-    private int level2NumBlocksThreshold = 5; //25
-    private int level3NumBlocksThreshold = 10; //35
+    private int level1NumBlocksThreshold = 3; //25
+    private int level2NumBlocksThreshold = 5; //50
+    private int level3NumBlocksThreshold = 10; //75
 
     private float currSpawnInterval;
     private const float level0SpawnInterval = 12f;
@@ -37,9 +38,9 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private const float level3SpawnInterval = 8f; 
 
     private const float level0LinearDrag = 20.0f; 
-    private const float level1LinearDrag = 17.0f;
-    private const float level2LinearDrag = 15.0f;
-    private const float level3LinearDrag = 10.0f;
+    private const float level1LinearDrag = 18.0f;
+    private const float level2LinearDrag = 16.0f;
+    private const float level3LinearDrag = 14.0f;
 
     private const int rotation90 = 90;
     private const int rotation180 = 180;
@@ -49,6 +50,9 @@ public class FallingBlockSpawner : MonoBehaviourPun
     public TMP_Text levelText;
 
     public AudioSource levelUp;
+    public AudioSource clearLayerSound;
+
+    public GridManager gridManager;
 
     private void Start()
     {
@@ -59,10 +63,10 @@ public class FallingBlockSpawner : MonoBehaviourPun
         string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         tetrisBlockPrefabsNames = blockNames;
 
-        int[] rotations = { 0, rotation90, rotation180}; 
+        int[] rotations = { 0, rotation90, rotation180};
         blockRotations = rotations;
 
-        float[] xzRange = { -1.25f, -0.75f, -0.25f, 0.25f, 0.75f, 1.25f}; //-1.25f, 1.25f
+        float[] xzRange = { -1.25f, -0.75f, -0.25f, 0.25f, 0.75f, 1.25f};
         xzRangePositions = xzRange;
 
     }
@@ -135,8 +139,31 @@ public class FallingBlockSpawner : MonoBehaviourPun
                 
             }
 
+            /**if (gridManager.CheckCompletelyOccupiedAndReset()) //returns true if completely occupied, resets grid dictionary
+            {
+                ClearLayer();
+                clearLayerSound.Play();
+            }*/
+
         }
     }
+
+    /**private void ClearLayer()
+    {
+        foreach (string oneTag in tetrisBlockPrefabsNames)
+        {
+            GameObject[] objectsWithTag = GameObject.FindGameObjectsWithTag(oneTag);
+            foreach (GameObject obj in objectsWithTag)
+            {
+                if (Mathf.Approximately(obj.transform.position.y, 0.25f))
+                {
+                    // Remove the object
+                    Destroy(obj);
+                }
+            }
+        }
+        
+    }*/
 
     private void SpawnCountdownBlock()
     {
@@ -166,7 +193,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         float zPos = xzRangePositions[randomZIndex];
 
         Vector3 spawnPosition = new Vector3(xPos, spawnHeight, zPos);
-        Debug.Log("Spawn pos" + spawnPosition);
+        // Debug.Log("Spawn pos" + spawnPosition);
          
         //2. Determine drop rotation
         int randomRotationIndexZ = Random.Range(0, blockRotations.Length);

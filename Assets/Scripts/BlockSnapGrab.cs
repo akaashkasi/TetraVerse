@@ -5,22 +5,27 @@ using Photon.Pun;
 using UnityEngine.XR.Interaction.Toolkit;
 using System;
 
-public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
+public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 {
     public AudioSource snapSound;
 
-    public AudioSource grabSound; 
+    public AudioSource grabSound;
 
-    public float gridSize = 0.5f; // Size of each grid square
-    public float offset = 0.5f / 2.0f;
+    public AudioSource errorSound;
 
-    public float minX = -1.5f; // Minimum X bound
-    public float maxX = 1.5f;  // Maximum X bound
-    public float minZ = -2.25f; // Minimum Z bound
-    public float maxZ = 2.25f;  // Maximum Z bound
+    private float gridSize = 0.5f; // Size of each grid square
+    private float offset = 0.5f / 2.0f;
+
+    private float minX = -1.5f; // Minimum X bound
+    private float maxX = 1.5f;  // Maximum X bound
+    private float minZ = -2.25f; // Minimum Z bound
+    private float maxZ = 2.25f;  // Maximum Z bound
 
     private XRGrabNetworkInteractable grabInteractable;
     private PhotonView PV;
+
+    public GridManager gridManager; 
+
 
     public void Start()
     {
@@ -33,7 +38,7 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
         PV = this.GetComponent<PhotonView>();
     }
 
-    public void Glow(SelectEnterEventArgs arg0)
+    public void Glow(SelectEnterEventArgs arg0) //TODO: not working
     {
         PV.RequestOwnership(); 
 
@@ -58,115 +63,71 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                //TODO: blocks 
                 //1. Identify closest position and snap to it.
                 Vector3 collisionPoint = collision.contacts[0].point;
-                /**Debug.Log("Collision floor pos" + collision.contacts[0].point);
 
-                //aligning with grid lines
-                Vector3 snapPosition = new Vector3(
-                     Mathf.Round(collisionPoint.x / gridSize) * gridSize + offset,
-                     Mathf.Round(collisionPoint.y / gridSize) * gridSize + offset,
-                     Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);
-                
-
-                //2. Stay in same rotation
-                float anglex = Mathf.Round(this.transform.rotation.eulerAngles.x / 90.0f) * 90.0f;
-                float angley = Mathf.Round(this.transform.rotation.eulerAngles.y / 90.0f) * 90.0f;
-                float anglez = Mathf.Round(this.transform.rotation.eulerAngles.z / 90.0f) * 90.0f;
-                Quaternion newRotation = Quaternion.Euler(anglex, angley, anglez);*/
-
-                //bounds checking for each specific block
-
-                if (this.gameObject.tag == "I-Block")
+                if (grabInteractable.enabled) //know that the block is not snapped/frozen
                 {
-                    Vector3 currentRotation = this.transform.rotation.eulerAngles;
-
-                    float targetZRotation = Mathf.Abs(currentRotation.z - 0f) < Mathf.Abs(currentRotation.z - 180f) ? 0f : 180f;
-                    currentRotation.z = targetZRotation;
-
-                    float targetYRotation = Mathf.Round(this.transform.rotation.eulerAngles.y / 90.0f) * 90.0f;
-                    currentRotation.y = targetYRotation;
-
-                    float targetXRotation = Mathf.Round(this.transform.rotation.eulerAngles.z / 90.0f) * 90.0f;
-                    currentRotation.x = targetZRotation;
-
-                    Vector3 snapPosition = new Vector3(
-                     Mathf.Round(collisionPoint.x / gridSize) * gridSize + offset,
-                     offset,
-                     Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);
-
-                    this.transform.position = snapPosition;
-
-                    this.transform.rotation = Quaternion.Euler(currentRotation);
-
-                }
-                else if (this.gameObject.tag == "J-Block" ||
-                    this.gameObject.tag == "L-Block" ||
-                    this.gameObject.tag == "S-Block" ||
-                    this.gameObject.tag == "Z-Block" ||
-                    this.gameObject.tag == "Square-Block" ||
-                    this.gameObject.tag == "T-Block")
-                {
-                    Vector3 currentRotation = this.transform.rotation.eulerAngles;
-
-                    //fix to either +90 or -90: must be "flat" on the floor
-                    float targetXRotation = Mathf.Abs(currentRotation.x - 90f) < Mathf.Abs(currentRotation.x + 90f) ? 90f : -90f;
-                    currentRotation.x = targetXRotation;
-
-                    float targetYRotation = Mathf.Round(this.transform.rotation.eulerAngles.y / 90.0f) * 90.0f;
-                    currentRotation.y = targetYRotation;
-
-                    float targetZRotation = Mathf.Round(this.transform.rotation.eulerAngles.z / 90.0f) * 90.0f;
-                    currentRotation.z = targetZRotation;
-
-                    Vector3 snapPosition = new Vector3(
-                     Mathf.Round(collisionPoint.x / gridSize) * gridSize + offset,
-                     offset,
-                     Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);
-                    //TODO: y is exactly 0.25f- I think?
-
-                    this.transform.position = snapPosition;
-
-                    this.transform.rotation = Quaternion.Euler(currentRotation);
+                    SnapAndFreeze(collisionPoint);
                 }
 
-                //this.transform.position = snapPosition;
-                //Debug.Log("Snap pos" + snapPosition);
-
-                //this.transform.rotation = newRotation;
-               // Debug.Log("Snap Rotation" + newRotation);
-
-                //3. Play snap sound
-                snapSound.Play();
-
-                //4. Freeze it so it doesn't move anymore
-                this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-
-                //5. Visual indication of "Freeze" via transparency
-                FreezeColorChange();
-
-                //6. disable grab:
-                this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = false;
             }
         }
-        /**else if (collision.gameObject.tag == "Block") //collision with another block
+    }
+
+    private void SnapAndFreeze(Vector3 collisionPoint)
+    {
+        float targetXRotation;
+        float targetYRotation;
+        float targetZRotation;
+        Vector3 currentRotation = this.transform.rotation.eulerAngles;
+        //1. Set rotation
+        if (this.gameObject.tag == "I-Block")
         {
-            Vector3 collisionPoint = collision.contacts[0].point;
-            Vector3 snapPosition = new Vector3(
-                     Mathf.Round(collisionPoint.x / gridSize) * gridSize + offset,
-                     Mathf.Round(collisionPoint.y / gridSize) * gridSize + offset,
-                     Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);
-            this.transform.position = snapPosition;
 
-            //2. Stay in same rotation
-            float anglex = Mathf.Round(this.transform.rotation.eulerAngles.x / 90.0f) * 90.0f;
-            float angley = Mathf.Round(this.transform.rotation.eulerAngles.y / 90.0f) * 90.0f;
-            float anglez = Mathf.Round(this.transform.rotation.eulerAngles.z / 90.0f) * 90.0f;
-            Quaternion newRotation = Quaternion.Euler(anglex, angley, anglez);
+            targetZRotation = Mathf.Abs(currentRotation.z - 0f) < Mathf.Abs(currentRotation.z - 180f) ? 0f : 180f;
+            currentRotation.z = targetZRotation;
 
-            this.transform.rotation = newRotation;
+            targetYRotation = Mathf.Round(this.transform.rotation.eulerAngles.y / 90.0f) * 90.0f;
+            currentRotation.y = targetYRotation;
 
+            targetXRotation = Mathf.Round(this.transform.rotation.eulerAngles.x / 90.0f) * 90.0f;
+            currentRotation.x = targetXRotation;
+
+        }
+        else if (this.gameObject.tag == "J-Block" ||
+            this.gameObject.tag == "L-Block" ||
+            this.gameObject.tag == "S-Block" ||
+            this.gameObject.tag == "Z-Block" ||
+            this.gameObject.tag == "Square-Block" ||
+            this.gameObject.tag == "T-Block")
+        {
+
+            //fix to either +90 or -90: must be "flat" on the floor
+            targetXRotation = Mathf.Abs(currentRotation.x - 90f) < Mathf.Abs(currentRotation.x + 90f) ? 90f : -90f;
+            currentRotation.x = targetXRotation;
+
+            targetYRotation = Mathf.Round(this.transform.rotation.eulerAngles.y / 90.0f) * 90.0f;
+            currentRotation.y = targetYRotation;
+
+            targetZRotation = Mathf.Round(this.transform.rotation.eulerAngles.z / 90.0f) * 90.0f;
+            currentRotation.z = targetZRotation;
+        }
+        //2. Compute Snap Position
+        Vector3 snapPosition = new Vector3(
+         Mathf.Round(collisionPoint.x / gridSize) * gridSize + offset,
+         offset,
+         Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);
+
+        this.transform.position = snapPosition;
+
+        this.transform.rotation = Quaternion.Euler(currentRotation); //has to happen before 
+
+        bool goodResult = CheckAndSetGridPositions();
+
+        if (goodResult == true) //returns true successful, then we can snap
+        {
+            Debug.Log("Entered snap code segment in block script");
             //3. Play snap sound
             snapSound.Play();
 
@@ -178,27 +139,76 @@ public class TetrisBlockSnap : MonoBehaviourPun //attached to each tetris block
 
             //6. disable grab:
             this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = false;
-        }*/
+
+            //TODO: Call public method in point system class. Should only calculate if snapped
+            //PointSystem.CalculateBlockPoints(this.transform);
+        }
+        else if (goodResult == false)
+        {
+            //do nothing block
+            Debug.Log("Entered not able to snap code segment");
+            errorSound.Play();
+        }
+    }
+    private bool CheckAndSetGridPositions()
+    {
+        Transform[] childAndParentTransforms = GetComponentsInChildren<Transform>();
+
+        Transform[] childTransforms = new Transform[childAndParentTransforms.Length - 1];
+
+        for (int i = 1; i < childAndParentTransforms.Length; i++)
+        {
+            childTransforms[i - 1] = childAndParentTransforms[i];
+        }
+
+        gridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
+
+        foreach (Transform childTransform in childTransforms)
+        {
+            bool valid = gridManager.isValidTransform(childTransform);
+            if (!valid)
+            {
+                Debug.Log("Found invalid position block script"); 
+                return false; 
+            }
+        }
+        foreach (Transform childTransform in childTransforms)
+        {
+            bool occupied = gridManager.isOccupied(childTransform);
+            if (occupied)
+            {
+                Debug.Log("Found invalid position block script");
+                return false;
+            }
+        }
+        //know all positions are valid and empty when we reach here
+        foreach (Transform childTransform in childTransforms)
+        {
+            gridManager.setPositionOccupied(childTransform);
+            Debug.Log("set a position occupied block script");
+        }
+        return true;
     }
 
     private void FreezeColorChange()
     {
-        Renderer[] childRenderers = GetComponentsInChildren<Renderer>();
+        Renderer[] childRenderers = GetComponentsInChildren<MeshRenderer>();
 
         foreach (Renderer childRenderer in childRenderers)
         {
             Color originalColor = childRenderer.material.color;
 
             Color lighterColor = new Color(
-            originalColor.r + 0.2f * (1 - originalColor.r),
-            originalColor.g + 0.2f * (1 - originalColor.g),
-            originalColor.b + 0.2f * (1 - originalColor.b),
+            originalColor.r + 0.5f * (1 - originalColor.r),
+            originalColor.g + 0.5f * (1 - originalColor.g),
+            originalColor.b + 0.5f * (1 - originalColor.b),
             originalColor.a
             );
             childRenderer.material.color = lighterColor;
 
         }
     }
+
     [PunRPC]
     public void TriggerGlow()
     {

@@ -1,60 +1,77 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Photon.Pun;
+using static UnityEngine.Rendering.DebugUI;
 
 public class GridManager : MonoBehaviourPun
 {
-    private int[,] publicGrid;
-    private int width = 10;
-    private int depth = 10;
+    // private const int gridSize = 10;
+    private Dictionary<ValueTuple<float, float>, bool> grid;
 
-    private int layersCompleted = 0;
+    private int occupiedCounter = 0; // To keep track of occupied spaces
 
-    private void Start()
+    public void Start()
     {
+        InitializeGrid();
+    }
 
-        int[,] grid = new int[width, depth];
-        for (int i = 0; i < width; i++)
+    private void InitializeGrid()
+    {
+        grid = new Dictionary<ValueTuple<float, float>, bool>();
+        for (float x = -2.25f; x <= 2.25f; x += 0.5f)
         {
-            for (int j = 0; j < depth; j++)
+            for (float z = -2.25f; z <= 2.25f; z += 0.5f)
             {
-                grid[i, j] = 0;
+                grid[(x, z)] = false; // Initially, no cells are occupied
             }
         }
-        publicGrid = grid;
     }
 
-    public void SetPositionOccupied(int x, int z)
+    public bool isOccupied(Transform transform) //assume it is valid
     {
-        publicGrid[x, z] = 1;
+        float x = RoundToTwoDecimalPlaces(transform.position.x); 
+        float z = RoundToTwoDecimalPlaces(transform.position.z);
+        return grid[(x, z)];
     }
 
-    public void ClearLayer()
+    public bool isValidTransform(Transform transform)
     {
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < depth; j++)
+        float x = RoundToTwoDecimalPlaces(transform.position.x);
+        float z = RoundToTwoDecimalPlaces(transform.position.z);
+        Debug.Log("X position in gridManager isValidTransform: " + x); 
+        Debug.Log("Z position in gridManager isValidTransform: " + z);
+        Debug.Log("isValidTransform result: " + grid.ContainsKey((x, z)));
+
+        return grid.ContainsKey((x, z));
+    }
+
+    public void setPositionOccupied(Transform transform) //assume it is valid
+    {
+        float x = RoundToTwoDecimalPlaces(transform.position.x);
+        float z = RoundToTwoDecimalPlaces(transform.position.z);
+
+            if (!grid[(x, z)])
             {
-                publicGrid[i, j] = 0;
-            }
-        }
-        layersCompleted++;
+                grid[(x, z)] = true;
+                occupiedCounter++;
+            Debug.Log("setPositionOccupied in Grid class called");
+            }            
     }
 
-    public bool FloorCompletelyOccupied()
+    public bool CheckCompletelyOccupiedAndReset()
     {
-        for (int i = 0; i < width; i++)
+        if (occupiedCounter == 12) //TODO: check that it works twice. 100 is actual number
         {
-            for (int j = 0; j < depth; j++)
-            {
-                if (publicGrid[i, j] == 0)
-                    return false;
-            }
+            InitializeGrid();
+            occupiedCounter = 0;
+            return true;
         }
-        return true;
+        return false;
     }
 
+    private float RoundToTwoDecimalPlaces(float number) //round to the tenth's place
+    {
+        return Mathf.Round(number * 100f) / 100f;
+    }
 }
-
