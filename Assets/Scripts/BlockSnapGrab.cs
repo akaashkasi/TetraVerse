@@ -24,7 +24,10 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
     private XRGrabNetworkInteractable grabInteractable;
     private PhotonView PV;
 
-    public GridManager gridManager; 
+    public GridManager gridManager;
+    private PointManager pointManager;
+
+    public bool isGrabbed = false;
 
 
     public void Start()
@@ -35,12 +38,14 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         grabInteractable.selectEntered.AddListener(Glow);
         grabInteractable.selectExited.AddListener(RemoveGlow);
 
+        pointManager = GameObject.Find("PointManager").GetComponent<PointManager>();
+
         PV = this.GetComponent<PhotonView>();
     }
 
     public void Glow(SelectEnterEventArgs arg0) //TODO: not working
     {
-        PV.RequestOwnership(); 
+        PV.RequestOwnership();
 
         PV.RPC("TriggerGlow", RpcTarget.AllBuffered);
     }
@@ -140,8 +145,8 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             //6. disable grab:
             this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = false;
 
-            //TODO: Call public method in point system class. Should only calculate if snapped
-            //PointSystem.CalculateBlockPoints(this.transform);
+            // 7. add points
+            pointManager.addTetrisPoints();
         }
         else if (goodResult == false)
         {
@@ -168,8 +173,8 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             bool valid = gridManager.isValidTransform(childTransform);
             if (!valid)
             {
-                Debug.Log("Found invalid position block script"); 
-                return false; 
+                Debug.Log("Found invalid position block script");
+                return false;
             }
         }
         foreach (Transform childTransform in childTransforms)
@@ -223,6 +228,14 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
         }
     }
+    public void Update()
+    {
+        if (grabInteractable.isSelected)
+        {
+            isGrabbed = true;
+        }
+    }
+
     [PunRPC]
     public void TriggerRemoveGlow()
     {
