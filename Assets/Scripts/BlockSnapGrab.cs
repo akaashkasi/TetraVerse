@@ -16,11 +16,6 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
     private float gridSize = 0.5f; // Size of each grid square
     private float offset = 0.5f / 2.0f;
 
-    private float minX = -1.5f; // Minimum X bound
-    private float maxX = 1.5f;  // Maximum X bound
-    private float minZ = -2.25f; // Minimum Z bound
-    private float maxZ = 2.25f;  // Maximum Z bound
-
     private XRGrabNetworkInteractable grabInteractable;
     private PhotonView PV;
 
