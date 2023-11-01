@@ -332,6 +332,7 @@ GameObject:
   - component: {fileID: 1755906087680636429}
   - component: {fileID: -6872075497982928372}
   - component: {fileID: 8062496168680135523}
+  - component: {fileID: 5316959071818430214}
   m_Layer: 0
   m_Name: I-Block
   m_TagString: I-Block
@@ -587,13 +588,8 @@ MonoBehaviour:
   snapSound: {fileID: 1755906087680636429}
   grabSound: {fileID: -6872075497982928372}
   errorSound: {fileID: 8062496168680135523}
-  gridSize: 0.5
-  offset: 0.25
-  minX: -1.5
-  maxX: 1.5
-  minZ: -1.5
-  maxZ: 1.5
   gridManager: {fileID: 0}
+  isGrabbed: 0
 --- !u!82 &1755906087680636429
 AudioSource:
   m_ObjectHideFlags: 0
@@ -882,6 +878,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5316959071818430214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8110147265883695504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 0.019090425, g: 0.36314598, b: 0.3679245, a: 1}
+  outlineWidth: 6.5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &9153067861731215904
 GameObject:
   m_ObjectHideFlags: 0
