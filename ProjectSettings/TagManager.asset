@@ -7,7 +7,6 @@ TagManager:
   - Floor
   - Block
   - Wall
-  - TetrisManager
   - InvisibleWall
   - Num1
   - Num2
@@ -20,6 +19,7 @@ TagManager:
   - Square-Block
   - T-Block
   - Z-Block
+  - PointManager
   layers:
   - Default
   - TransparentFX
