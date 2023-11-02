@@ -4,8 +4,8 @@ Name | Main Role | Responsibilities
 --- | --- | ---
 Madhavi | Networking, Agile Manager | Work heavily on back end: networking (coding) for game components, Unity asset management
 Evan | Sprint Release, Testing, Environment | Managing the sprint release, project presentation, environment and sound, play testing
-Akaash | Game Design and Creation | backend game logic (tetris blocks- grab interactions), point system, tech support for team
-Tian | Github Manager, Locomotion system, UI | Locomotion system coding, UI design, managing the spring release (sprint branch)
+Akaash | Game Design and Creation | backend game logic (tetris blocks- grab interactions), tech support for team
+Tian | Github Manager, Locomotion system, UI | Locomotion system coding, point system, managing the spring release (sprint branch)
 
 Sprint 3 Submission 
 
