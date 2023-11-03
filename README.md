@@ -4,63 +4,85 @@ Name | Main Role | Responsibilities
 --- | --- | ---
 Madhavi | Networking, Agile Manager | Work heavily on back end: networking (coding) for game components, Unity asset management
 Evan | Sprint Release, Testing, Environment | Managing the sprint release, project presentation, environment and sound, play testing
-Akaash | Game Design and Creation | backend game logic (tetris blocks- grab interactions), tech support for team
-Tian | Github Manager, Locomotion system, UI | Locomotion system coding, point system, managing the spring release (sprint branch)
+Akaash | Game Design and Creation | backend game logic (tetris blocks- grab interactions), point system, tech support for team
+Tian | Github Manager, Locomotion system, UI | Locomotion system coding, UI design, managing the spring release (sprint branch)
 
-Sprint 3 Submission 
+Sprint 4 Submission 
 
-Build/Playtest Instructions
+Usability Testing Instructions
 
-- Clone the branch labeled "sprint-3".
+- Clone the branch labeled Sprint-4.
 
-- Open the GameRoom scene from the Scenes folder.
+- The "3 2 1" countdown blocks spawn to indicate the start of the game. 
 
-- Go to build settings and select only the "GameRoom," to build and run. This will then open into the game room. 
+- At the end of the countdown, blocks will fall from the ceiling of the game room and from there you can be begin searching for blocks/positioning yourself in a spac to grab them. 
+
+- You can move around the room using the joysticks and blocks can be rotated by using one or both of your hands. 
+
+- Once the block touches the floor, it will snap to the nearest position and this will prevent further repositioning and rotation attempts.
+
+- The X button on the left controller can be utilized to jump up instead of waiting for the block to fall naturally.
+
+- You will receive five points if you simply allow the block to fall onto the group and it snaps successfully. 
+
+- If you grab the block and rotate it as you find necessary before placing it, you will be awarded with ten points. (Unfortunately, this aspect of the game has an error at the moment and will not occur as intended, but this will be rectified in the final sprint)
 
 Documentation Video Link
 
-https://clipchamp.com/watch/qK4mnLjqFmg
+- https://www.kapwing.com/videos/654466c6f693277ec87cbcf2
 
 Individual Member Contributions
 
-- Evan: Wrote/edited Sprint submission on the README document, added background audio to the game room, added sound effects for when the blocks collide with the floor, and created the voice-over for the demonstration video.
+- Evan: Wrote/edited Sprint submission on the README document, found and provided the original code for the outlines on the blocks, found and adjusted the speed of the audio used throughout the game to indicate "level" change, created the demonstration video for the sprint, and created the voice-over for the demonstration video.
 
-- Madhavi: Added the "3 2 1" blocks that spawn to signal the beginning of the game, implemented the "levels" in the game that directly result in the blocks falling at different speeds, worked on basic block snapping mechanics, and created the demonstration video.
+- Madhavi: Debugged the snapping system thoroughly, set the  behavior for unsuccessful snapping when trying to occupy same position as another block or outside the bounds of room, worked on tracking for occupied squares on floor grid via GridManager class which assists in the clearing of a layer, added audio to indicate "level" change within the game, created a wall around the "3 2 1" countdown blocks, added a visual indication of the blocks being frozen/snapped through a change in color, performed networking fixes, and adjusted the code for the proper utilization of outlines on the blocks.
 
-- Tian: Added the jump functionality and corrected various bugs such as blocks breaking the game room and the player being able to move outside of the game room.
+- Tian: Worked on creating the point system that allocates points for a user based on snapping success and interaction, worked on an initial version of the GridManager, worked on the creation of a point allocation system point based on  collaboration with other users, and performed networking fixes.
 
-- Akaash: Added a glow functionality to the blocks when grabbed, assisted in the correction of the bug involving the block being able to go through the side walls, and enabled the detection of a complete row to then delete or remove a set of blocks on the grid.
+- Akaash: Worked on GridManager logic and glow manager, worked with Madhavi to develop the logic of what happens when a layer is completed, used hashmap and tuples to map out each layer of the grid to check to understand what layer is filled to clear the layer and if a layer can in the future be cleared, and implemented a bloom post-processing system for the block to glow when it is grabbed.
 
 Additions
 
-- A vertical jumping system has been implemented within the game and it is binded to the trigger buttons on the Oculus controllers. You may need to move first using the joystick before pressing "X" on the Left Controller to jump. 
+- Audio with various speeds now plays throughout the game in order to indicate a "level" change for the players.
 
-- A "3,2,1" countdown sequence has been added to the game and it is utilized to signal the spawning of blocks within the game room.
+- A wall has been added around the "3 2 1" countdown blocks to prevent user interaction and collision with the blocks.
 
-- Text indicating the current level of the game is now displayed on the wall.
+- A visual indication of the blocks being frozen/snapped can now be seen through a change in color. (A lighter shade of the original color of the block)
 
-- Background music that continuously plays during gameplay has been added.
+- An outline system has been implemented that allows the user to see the individual subsections of each block as they fall and snap into  place.
 
-- A sound effect indicating the collision of a block with the floor of the game room has been added.
-
-- A basic block snapping system has been added that allows the blocks to align themselves with the grid spaces on the floor.
-
-- A sound effect indicating that a block has been grabbed by a player has been implemented.
+- A scoring system has been implemented that allows the user to keep track of how many points they have gathered throughout the game.
 
 Bug Fixes
 
-- Falling blocks that are too close to the walls no longer cause the game room to fall apart as a result.
+- The snapping system has been corrected and now block transform positions can be properly associated with an occupied position on the floor. (This was the biggest issue that we fixed)
 
-- Player hands can no longer go through the walls of the game room.
+- Unsuccessful snapping no longer occurs when two blocks attempt to occupy the same space or when blocks go outside the bounds of the game room.
 
-- Players can no longer utilize the continuous motion system to move outside of the game room.
+- The user can no longer collide or interfere with the "3 2 1" countdown blocks while they fall.
 
-Unity Issues
+- The game no longer glitches and causes multiple blocks to fall at the same time.
 
-- We were not able to determine how the adjust the lighting in the room in order to prevent the walls from appearing different.
+Final Sprint Goals
 
-- We attempted to rectify this issue by having Unity precompute the lighting data automatically, but that method didn't work.
+- We intend to find a way to empty/clear a layer of blocks once the requirements are met by the user(s).
 
-- In the next Sprint, we hope to have this lighting issue solved by editing the properties of walls and having them replicate a material that doesn't produce as many shadows.
+- We plan to patch several networking issues throughout the game.
 
-- Block snapping is slightly buggy and will be adjusted thoroughly during the next Sprint.
+- We aim to finish the revised point allocation system that operates based on collaboration with other users.
+
+- We will find a solution to the multiuser client issue where strange behaviors occur within the game from the perspective of anyone except the master client.
+
+- We wish to adjust the height of the character collider in order to make game feel more natural from the perspective of the user.
+
+- We intend to adjust the speed at which the blocks fall down in all 3 levels in order to indicate a difficulty shift.
+
+- We plan to determine how the game will properly end.
+
+Issues/Current Errors (Fixing these issues will be our primary focus for the final sprint as most other aspects of our game are completed)
+
+- Our game is not completely networked as we were focused on game logic during this sprint, but we will finish the networking system as we approach the final sprint. (Initial progress can be seen on Tian's branch where the "3 2 1" block's spawn and dissolve feature has been networked)
+
+- When more than 1 player joins the game, we have issues with the way the block is seen by anyone except the master client. Additional clients within the game may see odd behaviors such as the blocks appearing "jumpy" as they fall down.
+
+- When a user interacts with a block and then places it on the ground, the snapping is marked as "unsuccessful" and points aren't awarded even though it is technically successful. We will also ensure that this is fixed for the final sprint.
