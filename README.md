@@ -35,11 +35,11 @@ Individual Member Contributions
 
 - Evan: Wrote/edited Sprint submission on the README document, found and provided the original code for the outlines on the blocks, found and adjusted the speed of the audio used throughout the game to indicate "level" change, created the demonstration video for the sprint, and created the voice-over for the demonstration video.
 
-- Madhavi: Debugged the snapping system thoroughly, set the  behavior for unsuccessful snapping when trying to occupy same position as another block or outside the bounds of room, worked on tracking for occupied squares on floor grid via GridManager class which assists in the clearing of a layer, added audio to indicate "level" change within the game, created a wall around the "3 2 1" countdown blocks, added a visual indication of the blocks being frozen/snapped through a change in color, performed networking fixes, and adjusted the code for the proper utilization of outlines on the blocks.
+- Madhavi: Debugged the snapping system more, set the  behavior for unsuccessful snapping when trying to occupy same position as another block or outside the bounds of room, worked on tracking for occupied squares on floor grid via GridManager class which assists in the clearing of a layer, added audio to indicate "level" change within the game, created a wall around the "3 2 1" countdown blocks, added a visual indication of the blocks being frozen/snapped through a change in color, and performing networking fixes with Tian.
 
-- Tian: Worked on creating the point system that allocates points for a user based on snapping success and interaction, worked on an initial version of the GridManager, worked on the creation of a point allocation system point based on  collaboration with other users, and performed networking fixes.
+- Tian: Worked on creating the point system that allocates points for a user based on snapping success and interaction, worked on an initial version of the GridManager, worked on the creation of a point allocation system point based on collaboration with other users (work in progress), and performed networking fixes (work in progress). Work in progress items are not shown in this sprint but can be seen on Tian's branch. 
 
-- Akaash: Worked on GridManager logic and glow manager, worked with Madhavi to develop the logic of what happens when a layer is completed, used hashmap and tuples to map out each layer of the grid to check to understand what layer is filled to clear the layer and if a layer can in the future be cleared, and implemented a bloom post-processing system for the block to glow when it is grabbed.
+- Akaash: Worked on GridManager logic and glow manager, worked with Madhavi to develop the logic of what happens when a layer is completed, used hashmap and tuples to map out each layer of the grid to check to understand what layer is filled to clear the layer and if a layer can in the future be cleared, and in process of implementing a bloom post-processing system for the block to glow when it is grabbed.
 
 Additions
 
@@ -55,9 +55,9 @@ Additions
 
 Bug Fixes
 
-- The snapping system has been corrected and now block transform positions can be properly associated with an occupied position on the floor. (This was the biggest issue that we fixed)
+- The snapping system has been corrected for the most part and now block transform positions can be properly associated with an occupied position on the floor. (This was the biggest issue that we fixed)
 
-- Unsuccessful snapping no longer occurs when two blocks attempt to occupy the same space or when blocks go outside the bounds of the game room.
+- Snapping is no longer marked successful when two blocks attempt to occupy the same space or when blocks go outside the bounds of the game room.
 
 - The user can no longer collide or interfere with the "3 2 1" countdown blocks while they fall.
 
