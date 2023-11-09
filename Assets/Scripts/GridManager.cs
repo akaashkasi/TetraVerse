@@ -32,7 +32,9 @@ public class GridManager : MonoBehaviourPun
     {
         float x = RoundToTwoDecimalPlaces(transform.position.x); 
         float z = RoundToTwoDecimalPlaces(transform.position.z);
-        return grid[(x, z)];
+        if (isValidTransform(transform))
+            return grid[(x, z)];
+        return false;
     }
 
     public bool isValidTransform(Transform transform)
@@ -70,7 +72,7 @@ public class GridManager : MonoBehaviourPun
         return false;
     }
 
-    private float RoundToTwoDecimalPlaces(float number) //round to the tenth's place
+    private float RoundToTwoDecimalPlaces(float number) 
     {
         return Mathf.Round(number * 100f) / 100f;
     }

@@ -60,7 +60,8 @@ public class FallingBlockSpawner : MonoBehaviourPun
         numBlocksSpawned = 0;
         currSpawnInterval = level0SpawnInterval; //initial interval
 
-        string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
+        // string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
+        string[] blockNames = { "J-Block" };
         tetrisBlockPrefabsNames = blockNames;
 
         int[] rotations = { 0, rotation90, rotation180};
