@@ -34,6 +34,14 @@ public class GridManager : MonoBehaviourPun
         float z = RoundToTwoDecimalPlaces(transform.position.z);
         return grid[(x, z)];
     }
+    public bool isOccupiedVector(Vector3 transform) //assume it is valid
+    {
+        float x = RoundToTwoDecimalPlaces(transform.x);
+        float z = RoundToTwoDecimalPlaces(transform.z);
+        if (isValidPositionVector(transform))
+            return grid[(x, z)];
+        return false;
+    }
 
     public bool isValidTransform(Transform transform)
     {
@@ -46,6 +54,18 @@ public class GridManager : MonoBehaviourPun
         return grid.ContainsKey((x, z));
     }
 
+    public bool isValidPositionVector(Vector3 transform)
+    {
+        float x = RoundToTwoDecimalPlaces(transform.x);
+        float z = RoundToTwoDecimalPlaces(transform.z);
+        Debug.Log("X position in gridManager isValidTransform: " + x);
+        Debug.Log("Z position in gridManager isValidTransform: " + z);
+        Debug.Log("isValidTransform result: " + grid.ContainsKey((x, z)));
+
+        return grid.ContainsKey((x, z));
+    }
+
+
     public void setPositionOccupied(Transform transform) //assume it is valid
     {
         float x = RoundToTwoDecimalPlaces(transform.position.x);
@@ -57,6 +77,19 @@ public class GridManager : MonoBehaviourPun
                 occupiedCounter++;
             Debug.Log("setPositionOccupied in Grid class called");
             }            
+    }
+
+    public void setPositionOccupiedVector(Vector3 transform)
+    {
+        float x = RoundToTwoDecimalPlaces(transform.x);
+        float z = RoundToTwoDecimalPlaces(transform.z);
+
+        if (!grid[(x, z)])
+        {
+            grid[(x, z)] = true;
+            occupiedCounter++;
+            Debug.Log("setPositionOccupied in Grid class called");
+        }
     }
 
     public bool CheckCompletelyOccupiedAndReset()

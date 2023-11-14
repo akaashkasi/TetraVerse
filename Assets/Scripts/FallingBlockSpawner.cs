@@ -200,7 +200,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         int zRotation = blockRotations[randomRotationIndexZ];
 
         GameObject newBlock = PhotonNetwork.Instantiate(chosenBlockPrefabName, spawnPosition, Quaternion.identity);
-
+        
         Rigidbody rb = newBlock.GetComponent<Rigidbody>();
         if (rb != null)
         {
