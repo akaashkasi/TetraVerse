@@ -5,6 +5,7 @@ using Photon.Pun;
 using UnityEngine.XR.Interaction.Toolkit;
 using System;
 using TMPro;
+using UnityEngine.XR;
 
 public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 {
@@ -29,7 +30,16 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
     public Vector3 collisionPoint;
 
+    public int count = 0;
+
     public TMP_Text debugText;
+
+    private Vector3[] initialLocalPositions;
+    private Quaternion[] initialLocalRotations;
+
+    private Color[] originalColors;
+
+    private Coroutine _coroutine;
 
     public void Start()
     {
@@ -44,8 +54,42 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
         PV = this.GetComponent<PhotonView>();
         debugText = GameObject.Find("txtDebug").GetComponent<TMP_Text>();
+
+        initialLocalPositions = new Vector3[4];
+        initialLocalRotations = new Quaternion[4];
+
+        originalColors = new Color[4];
+
+        getChildLocalTransforms();
+
+        getChildColors();
+
+        collisionPoint = Vector3.zero;
+    }
+    private void getChildLocalTransforms()
+    {
+        int childCount = this.transform.childCount;
+        for (int i = 0; i < childCount; i++)
+        {
+            Transform child = this.transform.GetChild(i);
+            initialLocalPositions[i] = child.localPosition;
+            initialLocalRotations[i] = child.localRotation;
+        }
     }
 
+    private void getChildColors()
+    {
+        Renderer[] childRenderers = GetComponentsInChildren<MeshRenderer>();
+
+        for (int i = 0; i < childRenderers.Length; i++)
+        {
+            Renderer childRenderer = childRenderers[i];
+
+            // Store the original color
+            originalColors[i] = childRenderer.material.color;
+
+        }
+    }
     public void Glow(SelectEnterEventArgs arg0) //TODO: not working
     {
         PV.RequestOwnership();
@@ -70,36 +114,22 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         isGrabbed = true;
     }
 
-    //is it cause it goes through the floor that the collision for user isn't working as expected?
-   /** public void OnCollisionEnter(Collision collision)
-    {
-        if (grabInteractable.isSelected == false) //not currently being held by user, then do snap checking
-        {
-            if (collision.gameObject.tag == "Floor")
+    public void OnCollisionEnter(Collision collision)
+     {
+         if (grabInteractable.isSelected == false && collision.gameObject.tag == "Floor" && successfulSnap == false) //not currently being held by user, then do snap checking
+         {
+            /** if (collisionPoint == Vector3.zero) 
+                 collisionPoint = collision.contacts[0].point;*/
+            if (_coroutine == null) //trying to make it not run multiple at same time
             {
-                //debugText.text = "";
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    //1. Identify closest position and snap to it.
-                     
-                   if (successfulSnap == false) //&& selectExited == false) //know that the block is not snapped
-                    {
-                        collisionPoint = collision.contacts[0].point;
-                        SnapAndFreeze(collisionPoint);
-                        //debugText.text = debugText.text + "Debug: finished SnapAndFreeze " + count + " Block type: " + this.gameObject.tag + "\n";
-                        //count++;
-                    }
-                    //debugText.text = debugText.text + "Debug: outside if block OnCollisionEnter " + count2 + " Block type: " + this.gameObject.tag + "\n";
-                    //count2++;
-
-                }
+                _coroutine = StartCoroutine(SnapAndFreeze());
             }
+           // }
         }
-    }*/
+             
+     }
 
-
-
-    public void SnapAndFreeze()
+    private IEnumerator SnapAndFreeze()
     {
         float targetXRotation;
         float targetYRotation;
@@ -126,8 +156,6 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             this.gameObject.tag == "Square-Block" ||
             this.gameObject.tag == "T-Block")
         {
-
-            //fix to either +90 or -90: must be "flat" on the floor
             targetXRotation = Mathf.Abs(currentRotation.x - 90f) < Mathf.Abs(currentRotation.x + 90f) ? 90f : -90f;
             currentRotation.x = targetXRotation;
 
@@ -138,17 +166,20 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             currentRotation.z = targetZRotation;
         }
         //2. Compute Snap Position
-        Vector3 snapPosition = new Vector3(
+        /**Vector3 snapPosition = new Vector3(
          Mathf.Round(collisionPoint.x / gridSize) * gridSize + offset,
          offset,
-         Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);
+         Mathf.Round(collisionPoint.z / gridSize) * gridSize + offset);*/
+
+        //new way of trying
+         Vector3 snapPosition = new Vector3(
+         Mathf.Round(this.transform.position.x / gridSize) * gridSize + offset,
+         offset,
+         Mathf.Round(this.transform.position.z / gridSize) * gridSize + offset);
 
         this.transform.position = snapPosition;
 
         this.transform.rotation = Quaternion.Euler(currentRotation);
-
-        //moved outside
-        //this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 
         bool goodResult = CheckAndSetGridPositions();
 
@@ -177,74 +208,67 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
                 pointManager.addUserInteractionPoints();
             }
 
-            this.gameObject.GetComponent<Rigidbody>().useGravity = false;
-
-            this.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-
         }
-        else if (goodResult == false && successfulSnap == false)
+        else if (goodResult == false)
         {
             successfulSnap = false;
 
             this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None; //unfreezing it
 
+            UnFreezeColorChange();
+
+            this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = true;
+
             Debug.Log("Entered not able to snap code segment");
             errorSound.Play();
+
+            pointManager.subtractPoints(5);
         }
+        _coroutine = null;
+        yield return new WaitForSeconds(1f);
     }
 
 
     private bool CheckAndSetGridPositions()
     {
-        Transform[] childAndParentTransforms = GetComponentsInChildren<Transform>();
-
-        Transform[] childTransforms = new Transform[childAndParentTransforms.Length - 1];
 
         bool goodResult = true;
-
-        for (int i = 1; i < childAndParentTransforms.Length; i++)
-        {
-            childTransforms[i - 1] = childAndParentTransforms[i];
-        }
-
         gridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
 
-        foreach (Transform childTransform in childTransforms)
+        foreach(Vector3 childLocalPosition in initialLocalPositions)
         {
-            bool valid = gridManager.isValidTransform(childTransform);
+            Vector3 currentChildPosition = this.transform.position + childLocalPosition;
+            bool valid = gridManager.isValidPositionVector(currentChildPosition);
             if (valid == false)
             {
-                Debug.Log("Found invalid position block script");
-                debugText.text += "Collision Point: " + collisionPoint + "\n";
-                debugText.text += "Not Valid Transform: " + childTransform.position + "\n"; //here
-                goodResult = false;
-                break;
-   
+                debugText.text += "Not valid position of child: " + currentChildPosition;
             }
         }
         if (goodResult)
         {
-            foreach (Transform childTransform in childTransforms)
+            foreach(Vector3 childLocalPosition in initialLocalPositions)
             {
-                bool occupied = gridManager.isOccupied(childTransform);
+                Vector3 currentChildPosition = this.transform.position + childLocalPosition;
+                bool occupied = gridManager.isOccupiedVector(currentChildPosition);
                 if (occupied)
                 {
                     Debug.Log("Found invalid position block script");
-                    debugText.text += "Occupied Position " + childTransform.position;
+                    debugText.text += "Found Duplicate Occupied Position " + currentChildPosition + "\n";
                     goodResult = false;
                     break;
                 }
             }
         }
-        //know all positions are valid and empty when we reach here
         if (goodResult)
         {
-            foreach (Transform childTransform in childTransforms)
+            foreach (Vector3 childLocalPosition in initialLocalPositions)
             {
-                gridManager.setPositionOccupied(childTransform);
-                Debug.Log("set a position occupied block script");
+                Vector3 currentChildPosition = this.transform.position + childLocalPosition;
+                gridManager.setPositionOccupiedVector(currentChildPosition);
+                debugText.text += "Set to Occupied: " + currentChildPosition + "\n";
             }
         }
+
         return goodResult;
     }
 
@@ -252,18 +276,26 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
     {
         Renderer[] childRenderers = GetComponentsInChildren<MeshRenderer>();
 
-        foreach (Renderer childRenderer in childRenderers)
+        for (int i = 0; i <  childRenderers.Length; ++i)
         {
-            Color originalColor = childRenderer.material.color;
-
+            Color originalColor = originalColors[i];
             Color lighterColor = new Color(
             originalColor.r + 0.5f * (1 - originalColor.r),
             originalColor.g + 0.5f * (1 - originalColor.g),
             originalColor.b + 0.5f * (1 - originalColor.b),
             originalColor.a
             );
-            childRenderer.material.color = lighterColor;
+            childRenderers[i].material.color = lighterColor;
+        }
+    }
 
+    private void UnFreezeColorChange()
+    {
+        Renderer[] childRenderers = GetComponentsInChildren<MeshRenderer>();
+
+        for (int i = 0; i < childRenderers.Length; ++i)
+        {
+            childRenderers[i].material.color = originalColors[i];
         }
     }
 

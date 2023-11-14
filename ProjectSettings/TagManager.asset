@@ -24,10 +24,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - FloorSnapLayer
+  - Floor
   - Water
   - UI
-  - NoPeekLayer
+  - 
   - 
   - 
   - 
