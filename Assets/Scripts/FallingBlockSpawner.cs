@@ -53,6 +53,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
     public AudioSource clearLayerSound;
 
     public GridManager gridManager;
+    public GameStateManager gameStateManager;
 
     private void Start()
     {
@@ -60,7 +61,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         numBlocksSpawned = 0;
         currSpawnInterval = level0SpawnInterval; //initial interval
 
-         string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
+        string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         tetrisBlockPrefabsNames = blockNames;
 
         int[] rotations = { 0, rotation90, rotation180};
@@ -69,6 +70,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         float[] xzRange = { -1.25f, -0.75f, -0.25f, 0.25f, 0.75f, 1.25f};
         xzRangePositions = xzRange;
 
+        gameStateManager = GameObject.Find("GameStateManager").GetComponent<GameStateManager>();
     }
     private void Update() 
     {
@@ -94,6 +96,11 @@ public class FallingBlockSpawner : MonoBehaviourPun
                         GameObject wall = GameObject.FindGameObjectWithTag("InvisibleWall");
                         Destroy(wall);
                         firstSpawn = false; //don't want this to execute more than once
+                    }
+
+                    if (gameStateManager.isGameOver())
+                    {
+                        return;
                     }
 
                     SpawnRandomBlock();
@@ -148,7 +155,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         }
     }
 
-    /**private void ClearLayer()
+    private void ClearLayer()
     {
         foreach (string oneTag in tetrisBlockPrefabsNames)
         {
@@ -162,8 +169,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
                 }
             }
         }
-        
-    }*/
+    }
 
     private void SpawnCountdownBlock()
     {
