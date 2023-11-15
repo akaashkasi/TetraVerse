@@ -114,6 +114,29 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         isGrabbed = true;
     }
 
+    public void WhenSelectionIsEnded()
+    {
+        Quaternion currentRot = this.gameObject.transform.rotation;
+        Vector3 currentPos = this.gameObject.transform.position;
+        this.gameObject.transform.rotation = Quaternion.identity;
+        this.gameObject.transform.position = Vector3.zero;
+        Transform[] childrensWithParent = this.GetComponentsInChildren<Transform>();
+        Transform[] childrens = new Transform[4];
+
+        for (int i = 1; i < childrensWithParent.Length; i++)
+        {
+            childrens[i - 1] = childrensWithParent[i];
+
+            if (childrens[i - 1].transform.localRotation != Quaternion.identity)
+                childrens[i - 1].transform.localRotation = Quaternion.identity;
+
+            childrens[i - 1].transform.localPosition = initialLocalPositions[i - 1];
+        }
+
+        this.gameObject.transform.rotation = currentRot;
+        this.gameObject.transform.position = currentPos;
+    }
+
     public void OnCollisionEnter(Collision collision)
      {
          if (grabInteractable.isSelected == false && collision.gameObject.tag == "Floor" && successfulSnap == false) //not currently being held by user, then do snap checking
@@ -235,25 +258,31 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         bool goodResult = true;
         gridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
 
-        foreach(Vector3 childLocalPosition in initialLocalPositions)
+        Transform[] childrensWithParent = this.GetComponentsInChildren<Transform>();
+        Transform[] childrens = new Transform[4];
+        for (int i = 1; i < childrensWithParent.Length; i++)
         {
-            Vector3 currentChildPosition = this.transform.position + childLocalPosition;
-            bool valid = gridManager.isValidPositionVector(currentChildPosition);
+            childrens[i - 1] = childrensWithParent[i];
+        }
+        foreach(Transform child in childrens)
+        {
+            bool valid = gridManager.isValidTransform(child);
             if (valid == false)
             {
-                debugText.text += "Not valid position of child: " + currentChildPosition;
+                debugText.text += "Not valid position of child: " + child;
+                goodResult = false;
+                break;
             }
         }
         if (goodResult)
         {
-            foreach(Vector3 childLocalPosition in initialLocalPositions)
+            foreach (Transform child in childrens)
             {
-                Vector3 currentChildPosition = this.transform.position + childLocalPosition;
-                bool occupied = gridManager.isOccupiedVector(currentChildPosition);
+                bool occupied = gridManager.isOccupied(child);
                 if (occupied)
                 {
                     Debug.Log("Found invalid position block script");
-                    debugText.text += "Found Duplicate Occupied Position " + currentChildPosition + "\n";
+                    debugText.text += "Found Duplicate Occupied Position " + child + "\n";
                     goodResult = false;
                     break;
                 }
@@ -261,13 +290,46 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         }
         if (goodResult)
         {
-            foreach (Vector3 childLocalPosition in initialLocalPositions)
+            foreach (Transform child in childrens)
             {
-                Vector3 currentChildPosition = this.transform.position + childLocalPosition;
-                gridManager.setPositionOccupiedVector(currentChildPosition);
-                debugText.text += "Set to Occupied: " + currentChildPosition + "\n";
+                gridManager.setPositionOccupied(child);
+                debugText.text += "Set to Occupied: " + child + "\n";
             }
         }
+
+        // foreach(Vector3 childLocalPosition in initialLocalPositions)
+        // {
+        //     Vector3 currentChildPosition = this.transform.position + childLocalPosition;
+        //     bool valid = gridManager.isValidPositionVector(currentChildPosition);
+        //     if (valid == false)
+        //     {
+        //         debugText.text += "Not valid position of child: " + currentChildPosition;
+        //     }
+        // }
+        // if (goodResult)
+        // {
+        //     foreach(Vector3 childLocalPosition in initialLocalPositions)
+        //     {
+        //         Vector3 currentChildPosition = this.transform.position + childLocalPosition;
+        //         bool occupied = gridManager.isOccupiedVector(currentChildPosition);
+        //         if (occupied)
+        //         {
+        //             Debug.Log("Found invalid position block script");
+        //             //debugText.text += "Found Duplicate Occupied Position " + currentChildPosition + "\n";
+        //             goodResult = false;
+        //             break;
+        //         }
+        //     }
+        // }
+        // if (goodResult)
+        // {
+        //     foreach (Vector3 childLocalPosition in initialLocalPositions)
+        //     {
+        //         Vector3 currentChildPosition = this.transform.position + childLocalPosition;
+        //         gridManager.setPositionOccupiedVector(currentChildPosition);
+        //         //debugText.text += "Set to Occupied: " + currentChildPosition + "\n";
+        //     }
+        // }
 
         return goodResult;
     }
