@@ -32,7 +32,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
     public int count = 0;
 
-   // public TMP_Text debugText;
+    public TMP_Text debugText;
 
     private Vector3[] initialLocalPositions;
     private Quaternion[] initialLocalRotations;
@@ -52,7 +52,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         pointManager = GameObject.Find("PointManager").GetComponent<PointManager>();
 
         PV = this.GetComponent<PhotonView>();
-        //debugText = GameObject.Find("txtDebug").GetComponent<TMP_Text>();
+        debugText = GameObject.Find("txtDebug").GetComponent<TMP_Text>();
 
         initialLocalPositions = new Vector3[4];
         initialLocalRotations = new Quaternion[4];
@@ -245,7 +245,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
                 if (occupied)
                 {
                     Debug.Log("Found invalid position block script");
-                   // debugText.text += "Found Duplicate Occupied Position " + currentChildPosition + "\n";
+                    //debugText.text += "Found Duplicate Occupied Position " + currentChildPosition + "\n";
                     goodResult = false;
                     break;
                 }
@@ -257,7 +257,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             {
                 Vector3 currentChildPosition = this.transform.position + childLocalPosition;
                 gridManager.setPositionOccupiedVector(currentChildPosition);
-               // debugText.text += "Set to Occupied: " + currentChildPosition + "\n";
+                //debugText.text += "Set to Occupied: " + currentChildPosition + "\n";
             }
         }
 
