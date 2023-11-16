@@ -208,6 +208,8 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
         if (goodResult == true) //returns true successful, then we can snap
         {
+            debugText.text += "Entered good result branch\n";
+
             Debug.Log("Entered snap code segment in block script");
             //3. Play snap sound
             snapSound.Play();
@@ -266,10 +268,11 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         }
         foreach(Transform child in childrens)
         {
+            debugText.text += "Child position: " + child.position;
             bool valid = gridManager.isValidTransform(child);
             if (valid == false)
             {
-                debugText.text += "Not valid position of child: " + child;
+                //debugText.text += "Not valid position of child: " + child.position;
                 goodResult = false;
                 break;
             }
@@ -281,8 +284,8 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
                 bool occupied = gridManager.isOccupied(child);
                 if (occupied)
                 {
-                    Debug.Log("Found invalid position block script");
-                    debugText.text += "Found Duplicate Occupied Position " + child + "\n";
+                    //Debug.Log("Found invalid position block script");
+                    debugText.text += "Found Duplicate Occupied Position " + child.position + "\n";
                     goodResult = false;
                     break;
                 }
@@ -293,7 +296,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             foreach (Transform child in childrens)
             {
                 gridManager.setPositionOccupied(child);
-                debugText.text += "Set to Occupied: " + child + "\n";
+                debugText.text += "Set to Occupied: " + child.position + "\n"; //should print 4 times
             }
         }
 
