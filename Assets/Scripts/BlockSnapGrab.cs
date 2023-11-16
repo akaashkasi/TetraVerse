@@ -116,25 +116,27 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
     public void WhenSelectionIsEnded()
     {
-        Quaternion currentRot = this.gameObject.transform.rotation;
-        Vector3 currentPos = this.gameObject.transform.position;
-        this.gameObject.transform.rotation = Quaternion.identity;
-        this.gameObject.transform.position = Vector3.zero;
+        Quaternion currentRot = this.gameObject.transform.rotation; //get current rotation of parent object
+        Vector3 currentPos = this.gameObject.transform.position; //get current position of parent
+       // this.gameObject.transform.rotation = Quaternion.identity; //set the rotation of the parent to no rotation. 
+      //  this.gameObject.transform.position = Vector3.zero; //set the position of the parent to 0 vector.
+        //TODO:: is this what is causing weird behavior of it jumping out of hand immediately to a spot?
         Transform[] childrensWithParent = this.GetComponentsInChildren<Transform>();
-        Transform[] childrens = new Transform[4];
+        Transform[] childrens = new Transform[4]; 
 
         for (int i = 1; i < childrensWithParent.Length; i++)
         {
-            childrens[i - 1] = childrensWithParent[i];
+            childrens[i - 1] = childrensWithParent[i]; 
 
             if (childrens[i - 1].transform.localRotation != Quaternion.identity)
-                childrens[i - 1].transform.localRotation = Quaternion.identity;
+                childrens[i - 1].transform.localRotation = Quaternion.identity; //set child to have 0 rotation (as it is in the prefab)
 
-            childrens[i - 1].transform.localPosition = initialLocalPositions[i - 1];
+            childrens[i - 1].transform.localPosition = initialLocalPositions[i - 1]; //set its local position to the initial local position
+            //makes sense to do rotation before position
         }
 
-        this.gameObject.transform.rotation = currentRot;
-        this.gameObject.transform.position = currentPos;
+        this.gameObject.transform.rotation = currentRot; //set parent object rotation back to what it was at start of method
+        this.gameObject.transform.position = currentPos; //same for position
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -204,6 +206,8 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
         this.transform.rotation = Quaternion.Euler(currentRotation);
 
+        debugText.text += "SnapAndFreeze entered, set parent position and rotation\n";
+
         bool goodResult = CheckAndSetGridPositions();
 
         if (goodResult == true) //returns true successful, then we can snap
@@ -256,7 +260,6 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
     private bool CheckAndSetGridPositions()
     {
-
         bool goodResult = true;
         gridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
 
@@ -265,14 +268,16 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         for (int i = 1; i < childrensWithParent.Length; i++)
         {
             childrens[i - 1] = childrensWithParent[i];
+           debugText.text += "Child position in initializing for loop: " + childrens[i - 1].position + "\n"; //this is printing
         }
+
         foreach(Transform child in childrens)
         {
-            debugText.text += "Child position: " + child.position;
+            debugText.text += "Child position in first foreach loop: " + child.position; //TODO:: WHY is this is not printing
             bool valid = gridManager.isValidTransform(child);
             if (valid == false)
             {
-                //debugText.text += "Not valid position of child: " + child.position;
+                // debugText.text += "Not valid position of child: " + child.position;
                 goodResult = false;
                 break;
             }
@@ -335,6 +340,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         // }
 
         return goodResult;
+        //TODO:: if this method ran through completely we wouldn't have issue of OnCollisionEnter/SnapAndFreeze making changes to parent position 4 times and making block jump 3 more times than it needs to
     }
 
     private void FreezeColorChange()
