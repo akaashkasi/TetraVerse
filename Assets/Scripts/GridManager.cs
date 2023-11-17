@@ -44,14 +44,6 @@ public class GridManager : MonoBehaviourPun
             return grid[(x, z)];
         return false;
     }
-    public bool isOccupiedVector(Vector3 transform) //assume it is valid
-    {
-        float x = RoundToTwoDecimalPlaces(transform.x);
-        float z = RoundToTwoDecimalPlaces(transform.z);
-        if (isValidPositionVector(transform))
-            return grid[(x, z)];
-        return false;
-    }
 
     public bool isValidTransform(Transform transform)
     {

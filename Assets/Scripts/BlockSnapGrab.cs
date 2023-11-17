@@ -241,7 +241,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             bool valid = gridManager.isValidPositionVector(currentChildPosition);
             if (valid == false)
             {
-                debugText.text += "Not valid position of child: " + currentChildPosition;
+                // debugText.text += "Not valid position of child: " + currentChildPosition;
             }
         }
         if (goodResult)
@@ -253,7 +253,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
                 if (occupied)
                 {
                     Debug.Log("Found invalid position block script");
-                    debugText.text += "Found Duplicate Occupied Position " + currentChildPosition + "\n";
+                    // debugText.text += "Found Duplicate Occupied Position " + currentChildPosition + "\n";
                     goodResult = false;
                     break;
                 }
@@ -265,7 +265,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             {
                 Vector3 currentChildPosition = this.transform.position + childLocalPosition;
                 gridManager.setPositionOccupiedVector(currentChildPosition);
-                debugText.text += "Set to Occupied: " + currentChildPosition + "\n";
+               // debugText.text += "Set to Occupied: " + currentChildPosition + "\n";
             }
         }
 
