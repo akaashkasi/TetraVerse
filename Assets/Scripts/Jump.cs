@@ -5,7 +5,7 @@ public class Jump : MonoBehaviour
 {
     [SerializeField] private InputActionReference jumpButton;
     [SerializeField] private float jumpHeight = 9.0f;
-    [SerializeField] private float gravityValue = -9.81f;
+    [SerializeField] private float gravityValue = -4.81f;
 
     private CharacterController _characterController;
     private Vector3 _playerVelocity;
@@ -24,7 +24,7 @@ public class Jump : MonoBehaviour
     {
         if (_characterController.isGrounded)
         {
-            _playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+            _playerVelocity.y += Mathf.Sqrt(jumpHeight * -1.5f * gravityValue);
         }
     }
 
