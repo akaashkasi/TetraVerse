@@ -41,7 +41,7 @@ public class NumFloorCollision : MonoBehaviourPun
                 }
                 if (dissolveStrength > 0.5) //0.05 destroys but don't see the dissolve effect
                 {
-                    Destroy(this.gameObject);
+                    PhotonNetwork.Destroy(this.gameObject);
                     activated = false;
                 }
             }

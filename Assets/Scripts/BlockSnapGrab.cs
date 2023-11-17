@@ -15,8 +15,8 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
     public AudioSource errorSound;
 
-    private float gridSize = 0.5f; // Size of each grid square
-    private float offset = 0.5f / 2.0f;
+    private const float gridSize = 0.5f; // Size of each grid square
+    private const float offset = 0.25f;
 
     private XRGrabNetworkInteractable grabInteractable;
     private PhotonView PV;
@@ -46,6 +46,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         grabInteractable = this.GetComponent<XRGrabNetworkInteractable>();
 
         grabInteractable.selectEntered.AddListener(PlayGrabSound);
+        grabInteractable.selectEntered.AddListener(SetGrabbedValue);
         grabInteractable.selectEntered.AddListener(Glow);
         grabInteractable.selectExited.AddListener(RemoveGlow);
 
@@ -106,6 +107,11 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
     public void PlayGrabSound(SelectEnterEventArgs arg0)
     {
         grabSound.Play();
+    }
+
+    public void SetGrabbedValue(SelectEnterEventArgs arg0)
+    {
+        isGrabbed = true;
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -184,7 +190,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             snapSound.Play();
 
             //4. Freeze it so it doesn't move anymore
-            this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+             this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 
             //5. Visual indication of "Freeze" via transparency
             FreezeColorChange();
@@ -221,6 +227,8 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         _coroutine = null;
         yield return new WaitForSeconds(1f);
     }
+
+
     private bool CheckAndSetGridPositions()
     {
 
@@ -233,23 +241,23 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             bool valid = gridManager.isValidPositionVector(currentChildPosition);
             if (valid == false)
             {
-               // debugText.text += "Not valid position of child: " + currentChildPosition;
-                goodResult = false;
-                break;
+                debugText.text += "Not valid position of child: " + currentChildPosition;
             }
         }
-        foreach(Vector3 childLocalPosition in initialLocalPositions)
+        if (goodResult)
+        {
+            foreach(Vector3 childLocalPosition in initialLocalPositions)
             {
                 Vector3 currentChildPosition = this.transform.position + childLocalPosition;
                 bool occupied = gridManager.isOccupiedVector(currentChildPosition);
                 if (occupied)
                 {
                     Debug.Log("Found invalid position block script");
-                    //debugText.text += "Found Duplicate Occupied Position " + currentChildPosition + "\n";
+                    debugText.text += "Found Duplicate Occupied Position " + currentChildPosition + "\n";
                     goodResult = false;
                     break;
                 }
-            
+            }
         }
         if (goodResult)
         {
@@ -257,7 +265,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             {
                 Vector3 currentChildPosition = this.transform.position + childLocalPosition;
                 gridManager.setPositionOccupiedVector(currentChildPosition);
-                //debugText.text += "Set to Occupied: " + currentChildPosition + "\n";
+                debugText.text += "Set to Occupied: " + currentChildPosition + "\n";
             }
         }
 
@@ -305,15 +313,8 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
         }
     }
-    public void Update()
-    {
-        if (grabInteractable.isSelected)
-        {
-            isGrabbed = true;
-        }
-    }
 
-    [PunRPC]
+        [PunRPC]
     public void TriggerRemoveGlow()
     {
         Renderer[] childRenderers = GetComponentsInChildren<Renderer>();

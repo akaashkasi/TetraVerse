@@ -695,6 +695,10 @@ MonoBehaviour:
   errorSound: {fileID: 4009455784332503228}
   gridManager: {fileID: 0}
   isGrabbed: 0
+  successfulSnap: 0
+  collisionPoint: {x: 0, y: 0, z: 0}
+  count: 0
+  debugText: {fileID: 0}
 --- !u!82 &-6377075434910123281
 AudioSource:
   m_ObjectHideFlags: 0
