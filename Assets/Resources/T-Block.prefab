@@ -275,6 +275,10 @@ MonoBehaviour:
   errorSound: {fileID: 6802190979264586909}
   gridManager: {fileID: 0}
   isGrabbed: 0
+  successfulSnap: 0
+  collisionPoint: {x: 0, y: 0, z: 0}
+  count: 0
+  debugText: {fileID: 0}
 --- !u!82 &-1128157395335697316
 AudioSource:
   m_ObjectHideFlags: 0
@@ -576,7 +580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outlineMode: 0
-  outlineColor: {r: 0.22933449, g: 0.015663939, b: 0.3018868, a: 1}
+  outlineColor: {r: 0, g: 1, b: 0.0014023781, a: 1}
   outlineWidth: 10
   precomputeOutline: 0
   bakeKeys: []

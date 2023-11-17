@@ -1,0 +1,18 @@
+
+INFO [2023-11-16T21:41:45.264Z]: Preparing to initialize extension
+INFO [2023-11-16T21:41:49.438Z]: Registering flag observer
+INFO [2023-11-16T21:41:49.438Z]: Navigating to loading page
+INFO [2023-11-16T21:41:49.438Z]: Navigation
+INFO [2023-11-16T21:41:49.438Z]: {"page":"/loading"}
+INFO [2023-11-16T21:41:49.439Z]: Initializing workspace controller
+INFO [2023-11-16T21:41:49.439Z]: Navigating to blank page
+INFO [2023-11-16T21:41:49.439Z]: Creating URI handler
+INFO [2023-11-16T21:41:49.439Z]: Getting auth service props
+INFO [2023-11-16T21:41:49.441Z]: Creating auth service
+INFO [2023-11-16T21:41:49.441Z]: Setting network auth service
+INFO [2023-11-16T21:41:49.441Z]: Creating context store
+INFO [2023-11-16T21:41:49.441Z]: Creating engine
+INFO [2023-11-16T21:41:49.441Z]: Creating sql db
+INFO [2023-11-16T21:41:54.058Z]: Navigation
+INFO [2023-11-16T21:41:54.058Z]: {"page":"/initial-error"}
+ERROR [2023-11-16T21:41:54.062Z]: Root folder not found

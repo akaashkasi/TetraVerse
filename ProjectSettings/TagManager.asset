@@ -20,6 +20,7 @@ TagManager:
   - T-Block
   - Z-Block
   - PointManager
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - Floor
   - Water
   - UI
-  - 
+  - PostProcessing Layer
   - 
   - 
   - 
