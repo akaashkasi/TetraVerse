@@ -73,3 +73,7 @@ Post-Thanksgiving Testing
 
 - User testing of the velocity of a jump. We want to fine-tune the velocity of the jump both while going up and falling back down.
 Post bug-fix, thorough testing of clearing a layer.
+
+Additional Note
+
+- We are not going to do networking for Tetraverse because of the issues that we've had so far with its implementation. We have discussed this issue with the professors and it seems that a lack of networking features is fine.
