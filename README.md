@@ -29,7 +29,7 @@ Usability Testing Instructions
 
 Demonstration Video
 
-- https://www.kapwing.com/videos/6556fcc340222bfe5fd11d26
+- https://drive.google.com/file/d/1RGu9HSEUHqwphBf8J95jCZuXmoo6IcKa/view?usp=sharing
 
 Individual Member Contributions
 
