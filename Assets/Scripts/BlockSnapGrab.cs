@@ -41,6 +41,11 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
     private Coroutine _coroutine;
 
+    private Color originalOutlineColor;
+   
+    private Color grabbedOutlineColor = new Color(1f / 255f, 255f / 255f, 31f / 255f, 1f);
+    
+
     public void Start()
     {
         grabInteractable = this.GetComponent<XRGrabNetworkInteractable>();
@@ -65,6 +70,12 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         getChildColors();
 
         collisionPoint = Vector3.zero;
+
+        Outline outlineComponent = GetComponent<Outline>();
+        if (outlineComponent != null)
+        {
+            originalOutlineColor = outlineComponent.OutlineColor;
+        }
     }
     private void getChildLocalTransforms()
     {
@@ -95,6 +106,12 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         PV.RequestOwnership();
 
         PV.RPC("TriggerGlow", RpcTarget.AllBuffered);
+
+        Outline outlineComponent = GetComponent<Outline>();
+        if (outlineComponent != null)
+        {
+            outlineComponent.OutlineColor = grabbedOutlineColor;
+        }
     }
 
     public void RemoveGlow(SelectExitEventArgs arg0)
@@ -102,6 +119,12 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         PV.RequestOwnership();
 
         PV.RPC("TriggerRemoveGlow", RpcTarget.AllBuffered);
+
+        Outline outlineComponent = GetComponent<Outline>();
+        if (outlineComponent != null)
+        {
+            outlineComponent.OutlineColor = originalOutlineColor;
+        }
     }
 
     public void PlayGrabSound(SelectEnterEventArgs arg0)
