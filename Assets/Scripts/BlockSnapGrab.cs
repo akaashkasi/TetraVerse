@@ -119,7 +119,6 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         Quaternion currentRot = this.gameObject.transform.rotation; //get current rotation of parent object
         Vector3 currentPos = this.gameObject.transform.position; //get current position of parent
         Transform[] childrensWithParent = this.GetComponentsInChildren<Transform>();
-        debugText.text += "ChildrensWithParent size: " + childrensWithParent.Length.ToString() + "\n";
         Transform[] childrens = new Transform[4]; 
 
         for (int i = 0; i < childrens.Length; i++)
@@ -259,11 +258,10 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         }
         foreach (Transform child in childrens)
         {
-            debugText.text += " child " + child.position + "\n"; 
+            //debugText.text += " child " + child.position + "\n"; 
         }
         foreach(Transform child in childrens)
         {
-            debugText.text += "foreach loop 1\n"; //this is printing
             bool valid = gridManager.isValidTransform(child);
             if (valid == false)
             {
@@ -276,12 +274,10 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         {
             foreach (Transform child in childrens)
             {
-                debugText.text += "foreach loop 2\n";
                 bool occupied = gridManager.isOccupied(child);
                 if (occupied)
                 {
-                    //Debug.Log("Found invalid position block script");
-                    debugText.text += "Found Duplicate Occupied Position " + child.position + "\n";
+                    //debugText.text += "Found Duplicate Occupied Position " + child.position + "\n";
                     goodResult = false;
                     break;
                 }
@@ -291,7 +287,6 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         {
             foreach (Transform child in childrens)
             {
-                debugText.text += "foreach loop 3\n";
                 gridManager.setPositionOccupied(child);
                // debugText.text += "Set to Occupied: " + child.position + "\n"; //should print 4 times
             }
@@ -331,7 +326,6 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         //     }
         // }
         return goodResult;
-        //TODO:: if this method ran through completely we wouldn't have issue of OnCollisionEnter/SnapAndFreeze making changes to parent position 4 times and making block jump 3 more times than it needs to
     }
 
     private void FreezeColorChange()
