@@ -4,38 +4,52 @@ using UnityEngine.InputSystem;
 public class Jump : MonoBehaviour
 {
     [SerializeField] private InputActionReference jumpButton;
-    [SerializeField] private float jumpHeight = 9.0f;
-    [SerializeField] private float gravityValue = -4.81f;
+    [SerializeField] private float jumpHeight = 5.0f;
+    [SerializeField] private float jumpGravityValue = -1.0f; // Gravity while jumping
+    [SerializeField] private float gravityValue = -9.81f; // Regular gravity
 
     private CharacterController _characterController;
     private Vector3 _playerVelocity;
+    private bool _isJumping;
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        _playerVelocity = Vector3.zero;
     }
 
-    private void OnEnable() => jumpButton.action.performed += Jumping;
+    private void OnEnable()
+    {
+        jumpButton.action.performed += JumpPerformed;
+    }
 
-    private void OnDisable() => jumpButton.action.performed -= Jumping;
+    private void OnDisable()
+    {
+        jumpButton.action.performed -= JumpPerformed;
+    }
 
-    private void Jumping(InputAction.CallbackContext context)
+    private void JumpPerformed(InputAction.CallbackContext context)
+    {
+        if (_characterController.isGrounded && !_isJumping)
+        {
+            _isJumping = true;
+            _playerVelocity.y = Mathf.Sqrt(jumpHeight * -1.5f * gravityValue);
+        }
+    }
+
+    private void FixedUpdate()
     {
         if (_characterController.isGrounded)
         {
-            _playerVelocity.y += Mathf.Sqrt(jumpHeight * -1.5f * gravityValue);
+            if (_isJumping)
+            {
+                _isJumping = false;
+            }
+            _playerVelocity.y = 0f;
+        } else {
+            float appliedGravityValue = _isJumping ? jumpGravityValue : gravityValue;
+            _playerVelocity.y += appliedGravityValue * Time.fixedDeltaTime;
         }
-    }
 
-    private void Update()
-    {
-        if (_characterController.isGrounded && _playerVelocity.y < 0)
-        {
-             _playerVelocity.y = 0f;
-        }
-
-        _playerVelocity.y += gravityValue * Time.deltaTime;
-        _characterController.Move(_playerVelocity * Time.deltaTime);
+        _characterController.Move(_playerVelocity * Time.fixedDeltaTime);
     }
 }

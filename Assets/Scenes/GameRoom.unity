@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028353, g: 0.2257136, b: 0.30692214, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028396, g: 0.22571427, b: 0.30692327, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -573,7 +573,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 219499320}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: a6de87887e937294898c15c77c7d46a9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3633,6 +3633,7 @@ MonoBehaviour:
   jumpButton: {fileID: 4291729775225994109, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
   jumpHeight: 5
+  jumpGravityValue: -1
   gravityValue: -9.81
 --- !u!143 &1203944733
 CharacterController:
@@ -3683,7 +3684,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -5471,6 +5472,7 @@ MonoBehaviour:
   levelUp: {fileID: 1731008512}
   clearLayerSound: {fileID: 0}
   gridManager: {fileID: 424248513}
+  gameStateManager: {fileID: 0}
 --- !u!4 &1731008510
 Transform:
   m_ObjectHideFlags: 0
