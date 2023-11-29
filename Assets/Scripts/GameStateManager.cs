@@ -10,17 +10,20 @@ public class GameStateManager : MonoBehaviourPun
 
     private PointManager pointManager;
 
+    public AudioSource gameEndSound;
+
     private bool gameOver = false;
 
     public void Start()
     {
         pointManager = GameObject.Find("PointManager").GetComponent<PointManager>();
 
-        gameStateText.text = "Game on";
+        //gameStateText.text = "Game on";
+        gameStateText.text = "";
     }
 
     public void Update() {
-        if (pointManager.getPoints() >= 600) {
+        if (pointManager.getPoints() >= 500) {
             gameOver = true;
         }
         if (gameOver) {
@@ -36,6 +39,7 @@ public class GameStateManager : MonoBehaviourPun
         // delete all blocks in the scene
         gameOver = false;
         pointManager.resetPoints();
-        gameStateText.text = "Game on";
+        //gameStateText.text = "Game on";
+        gameStateText.text = "";
     }
 }
