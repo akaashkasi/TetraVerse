@@ -147,11 +147,11 @@ public class FallingBlockSpawner : MonoBehaviourPun
                 
             }
 
-            /**if (gridManager.CheckCompletelyOccupiedAndReset()) //returns true if completely occupied, resets grid dictionary
+            if (gridManager.CheckCompletelyOccupiedAndReset()) //returns true if completely occupied, resets grid dictionary
             {
                 ClearLayer();
                 clearLayerSound.Play();
-            }*/
+            }
 
         }
     }
