@@ -19,7 +19,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
 
     private float spawnTimer;
 
-    private const int Level0 = 0;
+    //private const int Level0 = 0;
     private const int Level1 = 1;
     private const int Level2 = 2;
     private const int Level3 = 3;
@@ -27,17 +27,17 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private int curLevel;
 
     private int numBlocksSpawned;
-    private int level1NumBlocksThreshold = 3; //25
-    private int level2NumBlocksThreshold = 5; //50
-    private int level3NumBlocksThreshold = 10; //75
+    private int level1ToLevel2Threshold = 25; //25
+    private int level2ToLevel3Threshold = 50; //50
+    // private int level3NumBlocksThreshold = 75; don't use this at all
 
     private float currSpawnInterval;
-    private const float level0SpawnInterval = 12f;
+    // private const float level0SpawnInterval = 12f;
     private const float level1SpawnInterval = 10f; 
     private const float level2SpawnInterval = 9f;
     private const float level3SpawnInterval = 8f; 
 
-    private const float level0LinearDrag = 20.0f; 
+    // private const float level0LinearDrag = 20.0f; 
     private const float level1LinearDrag = 18.0f;
     private const float level2LinearDrag = 16.0f;
     private const float level3LinearDrag = 14.0f;
@@ -55,11 +55,13 @@ public class FallingBlockSpawner : MonoBehaviourPun
     public GridManager gridManager;
     public GameStateManager gameStateManager;
 
+    private PointManager pointManager;
+
     private void Start()
     {
-        curLevel = Level0;
+        curLevel = Level1;
         numBlocksSpawned = 0;
-        currSpawnInterval = level0SpawnInterval; //initial interval
+        currSpawnInterval = level1SpawnInterval; //initial interval
 
          string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         //string[] blockNames = { "J-Block" };
@@ -72,6 +74,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         xzRangePositions = xzRange;
 
         gameStateManager = GameObject.Find("GameStateManager").GetComponent<GameStateManager>();
+        pointManager = GameObject.Find("PointManager").GetComponent<PointManager>();
     }
     private void Update() 
     {
@@ -110,7 +113,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
                     numBlocksSpawned++;
 
                     //After a set number of blocks which have been spawned, move onto next "level"
-                    if (numBlocksSpawned > level3NumBlocksThreshold)
+                    /**if (numBlocksSpawned > level3NumBlocksThreshold)
                     {
                         if (numBlocksSpawned == level3NumBlocksThreshold + 1) //only play once
                         {
@@ -122,36 +125,37 @@ public class FallingBlockSpawner : MonoBehaviourPun
 
                         
                     }
-                    else if (numBlocksSpawned > level2NumBlocksThreshold)
+                    else*/ if (numBlocksSpawned > level2ToLevel3Threshold)
                     {
-                        if (numBlocksSpawned == level2NumBlocksThreshold + 1)
+                        if (numBlocksSpawned == level2ToLevel3Threshold + 1)
+                        {
+                            levelUp.Play();
+                        }
+                        curLevel = Level3;
+                        currSpawnInterval = level3SpawnInterval;
+                        levelText.text = "Level: 3";
+
+                    }
+                    else if (numBlocksSpawned > level1ToLevel2Threshold)
+                    {
+                        if (numBlocksSpawned == level1ToLevel2Threshold + 1)
                         {
                             levelUp.Play();
                         }
                         curLevel = Level2;
                         currSpawnInterval = level2SpawnInterval;
                         levelText.text = "Level: 2";
-
-                    }
-                    else if (numBlocksSpawned > level1NumBlocksThreshold)
-                    {
-                        if (numBlocksSpawned == level1NumBlocksThreshold + 1)
-                        {
-                            levelUp.Play();
-                        }
-                        curLevel = Level1;
-                        currSpawnInterval = level1SpawnInterval;
-                        levelText.text = "Level: 1";
                     }
                 }
                 
             }
 
-            /**if (gridManager.CheckCompletelyOccupiedAndReset()) //returns true if completely occupied, resets grid dictionary
+            if (gridManager.CheckCompletelyOccupiedAndReset()) //returns true if completely occupied, resets grid dictionary
             {
                 ClearLayer();
+                pointManager.addLayerPoints();
                 clearLayerSound.Play();
-            }*/
+            }
 
         }
     }
@@ -175,7 +179,16 @@ public class FallingBlockSpawner : MonoBehaviourPun
     private void SpawnCountdownBlock()
     {
         string time = "Num" + ((int) countdownTime).ToString();
-        Vector3 spawnPosition = new Vector3(-0.75f, spawnHeight, 2.0f);
+        Vector3 spawnPosition = new Vector3(0, 0, 0);
+        if (time.Equals("Num1"))
+        {
+            spawnPosition = new Vector3(-1.25f, spawnHeight, 2.0f);
+        }
+        else
+        {
+            spawnPosition = new Vector3(-0.75f, spawnHeight, 2.0f);
+        }
+
         GameObject newBlock = PhotonNetwork.Instantiate(time, spawnPosition, Quaternion.identity);
         Rigidbody rb = newBlock.GetComponent<Rigidbody>();
 
@@ -215,11 +228,11 @@ public class FallingBlockSpawner : MonoBehaviourPun
             rb.useGravity = true;
 
             //3. Change the pace at which the object falls based on the level
-            if (curLevel == Level0)
+            /**if (curLevel == Level0)
             {
                 rb.drag = level0LinearDrag;
             }
-            else if (curLevel == Level1)
+            else*/ if (curLevel == Level1)
             {
                 rb.drag = level1LinearDrag;
             }
