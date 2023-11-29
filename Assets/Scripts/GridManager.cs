@@ -96,7 +96,7 @@ public class GridManager : MonoBehaviourPun
 
     public bool CheckCompletelyOccupiedAndReset()
     {
-        if (occupiedCounter == 12) //TODO: check that it works twice. 100 is actual number
+        if (occupiedCounter == 100) //can do smaller number for testing. should be 100
         {
             InitializeGrid();
             occupiedCounter = 0;

@@ -10,7 +10,7 @@ public class GameStateManager : MonoBehaviourPun
 
     private PointManager pointManager;
 
-    //public AudioSource gameEndSound;
+    public AudioSource gameEndSound;
 
     private bool gameOver = false;
 
@@ -28,6 +28,7 @@ public class GameStateManager : MonoBehaviourPun
         }
         if (gameOver) {
             gameStateText.text = "Game Over";
+            gameEndSound.Play();
         }
     }
 

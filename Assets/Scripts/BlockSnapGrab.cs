@@ -44,6 +44,8 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
     private Color originalOutlineColor;
    
     private Color grabbedOutlineColor = new Color(1f / 255f, 255f / 255f, 31f / 255f, 1f);
+
+    private Outline outlineComponent;
     
 
     public void Start()
@@ -53,7 +55,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         grabInteractable.selectEntered.AddListener(PlayGrabSound);
         grabInteractable.selectEntered.AddListener(SetGrabbedValue);
         grabInteractable.selectEntered.AddListener(Glow);
-        grabInteractable.selectExited.AddListener(RemoveGlow);
+        //grabInteractable.selectExited.AddListener(RemoveGlow);
 
         pointManager = GameObject.Find("PointManager").GetComponent<PointManager>();
 
@@ -71,11 +73,13 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
         collisionPoint = Vector3.zero;
 
-        Outline outlineComponent = GetComponent<Outline>();
-        if (outlineComponent != null)
+        outlineComponent = this.GetComponent<Outline>();
+        originalOutlineColor = outlineComponent.OutlineColor;
+
+        /**((if (outlineComponent != null)
         {
             originalOutlineColor = outlineComponent.OutlineColor;
-        }
+        }*/
     }
     private void getChildLocalTransforms()
     {
@@ -101,31 +105,25 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
         }
     }
-    public void Glow(SelectEnterEventArgs arg0) //TODO: not working
+    public void Glow(SelectEnterEventArgs arg0) 
     {
-        PV.RequestOwnership();
 
-        PV.RPC("TriggerGlow", RpcTarget.AllBuffered);
-
-        Outline outlineComponent = GetComponent<Outline>();
-        if (outlineComponent != null)
-        {
+       // Outline outlineComponent = GetComponent<Outline>();
+        /**if (outlineComponent != null)
+        {*/
             outlineComponent.OutlineColor = grabbedOutlineColor;
-        }
+       // }
     }
 
-    public void RemoveGlow(SelectExitEventArgs arg0)
+    /**public void RemoveGlow(SelectExitEventArgs arg0)
     {
-        PV.RequestOwnership();
 
-        PV.RPC("TriggerRemoveGlow", RpcTarget.AllBuffered);
-
-        Outline outlineComponent = GetComponent<Outline>();
+       // Outline outlineComponent = GetComponent<Outline>();
         if (outlineComponent != null)
         {
             outlineComponent.OutlineColor = originalOutlineColor;
-        }
-    }
+       // }
+    }*/
 
     public void PlayGrabSound(SelectEnterEventArgs arg0)
     {
@@ -155,13 +153,16 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         }
         
         this.gameObject.transform.rotation = currentRot; //set parent rotation back to what it was at start
-        this.gameObject.transform.position = currentPos; 
+        this.gameObject.transform.position = currentPos;
+
+        outlineComponent.OutlineColor = originalOutlineColor; //change outline color back. TODO: Not working
     }
 
     public void OnCollisionEnter(Collision collision)
      {
          if (grabInteractable.isSelected == false && collision.gameObject.tag == "Floor" && successfulSnap == false) //not currently being held by user, then do snap checking
          {
+            debugText.text += "Collide\n";
             /**if (collisionPoint == Vector3.zero) 
                  collisionPoint = collision.contacts[0].point;*/
             if (_coroutine == null) //trying to make it not run multiple at same time
@@ -252,11 +253,11 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         {
             successfulSnap = false;
 
-            this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None; //unfreezing it
+           // this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None; //unfreezing it
 
-            UnFreezeColorChange();
+          //  UnFreezeColorChange();
 
-            this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = true;
+          //  this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = true;
 
             Debug.Log("Entered not able to snap code segment");
             errorSound.Play();
@@ -341,36 +342,6 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
         for (int i = 0; i < childRenderers.Length; ++i)
         {
             childRenderers[i].material.color = originalColors[i];
-        }
-    }
-
-    [PunRPC]
-    public void TriggerGlow()
-    {
-        Renderer[] childRenderers = GetComponentsInChildren<Renderer>();
-
-        foreach (Renderer childRenderer in childRenderers)
-        {
-            Color originalColor = childRenderer.material.color;
-
-            Color glowColor = originalColor * 5f;
-            childRenderer.material.SetColor("_EmissionColor", glowColor);
-
-        }
-    }
-
-        [PunRPC]
-    public void TriggerRemoveGlow()
-    {
-        Renderer[] childRenderers = GetComponentsInChildren<Renderer>();
-
-        foreach (Renderer childRenderer in childRenderers)
-        {
-            Color glowColor = childRenderer.material.color;
-
-            Color originalColor = glowColor / 5f;
-            childRenderer.material.SetColor("_EmissionColor", originalColor);
-
         }
     }
 

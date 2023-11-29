@@ -167,7 +167,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
             GameObject[] objectsWithTag = GameObject.FindGameObjectsWithTag(oneTag);
             foreach (GameObject obj in objectsWithTag)
             {
-                if (Mathf.Approximately(obj.transform.position.y, 0.25f))
+                if (Mathf.Abs(obj.transform.position.y - 0.25f) < 0.1f)
                 {
                     // Remove the object
                     Destroy(obj);
