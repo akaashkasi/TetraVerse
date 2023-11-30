@@ -33,13 +33,13 @@ public class FallingBlockSpawner : MonoBehaviourPun
 
     private float currSpawnInterval;
     // private const float level0SpawnInterval = 12f;
-    private const float level1SpawnInterval = 10f; 
-    private const float level2SpawnInterval = 9f;
-    private const float level3SpawnInterval = 8f; 
+    private const float level1SpawnInterval = 12f; 
+    private const float level2SpawnInterval = 11f;
+    private const float level3SpawnInterval = 10f; 
 
     // private const float level0LinearDrag = 20.0f; 
-    private const float level1LinearDrag = 18.0f;
-    private const float level2LinearDrag = 16.0f;
+    private const float level1LinearDrag = 20.0f;
+    private const float level2LinearDrag = 17.0f;
     private const float level3LinearDrag = 14.0f;
 
     private const int rotation90 = 90;
@@ -63,7 +63,7 @@ public class FallingBlockSpawner : MonoBehaviourPun
         numBlocksSpawned = 0;
         currSpawnInterval = level1SpawnInterval; //initial interval
 
-         string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
+        string[] blockNames = { "I-Block", "J-Block", "L-Block", "S-Block", "Square-Block", "T-Block", "Z-Block" };
         //string[] blockNames = { "J-Block" };
         tetrisBlockPrefabsNames = blockNames;
 
