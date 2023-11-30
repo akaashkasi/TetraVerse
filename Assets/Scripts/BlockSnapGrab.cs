@@ -46,7 +46,11 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
     private Color grabbedOutlineColor = new Color(1f / 255f, 255f / 255f, 31f / 255f, 1f);
 
     private Outline outlineComponent;
-    
+
+    private bool destroyActivated = false;
+
+    private float elapsedTime = 0;
+
 
     public void Start()
     {
@@ -81,6 +85,7 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
             originalOutlineColor = outlineComponent.OutlineColor;
         }*/
     }
+
     private void getChildLocalTransforms()
     {
         int childCount = this.transform.childCount;
@@ -105,7 +110,24 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
 
         }
     }
-    public void Glow(SelectEnterEventArgs arg0) 
+
+    public void Update()
+    {
+        if (destroyActivated)
+        {
+            if (elapsedTime < 2.5f)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+            else
+            {
+                PhotonNetwork.Destroy(this.gameObject);
+                destroyActivated = false;
+            }
+        }
+    }
+
+public void Glow(SelectEnterEventArgs arg0) 
     {
 
        // Outline outlineComponent = GetComponent<Outline>();
@@ -162,7 +184,6 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
      {
          if (grabInteractable.isSelected == false && collision.gameObject.tag == "Floor" && successfulSnap == false) //not currently being held by user, then do snap checking
          {
-            debugText.text += "Collide\n";
             /**if (collisionPoint == Vector3.zero) 
                  collisionPoint = collision.contacts[0].point;*/
             if (_coroutine == null) //trying to make it not run multiple at same time
@@ -260,7 +281,11 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
           //  this.gameObject.GetComponent<XRGrabNetworkInteractable>().enabled = true;
 
             Debug.Log("Entered not able to snap code segment");
+
             errorSound.Play();
+            elapsedTime = 0;
+            destroyActivated = true;
+
 
         }
         _coroutine = null;
