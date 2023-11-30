@@ -125,6 +125,12 @@ public class BlockSnapGrab : MonoBehaviourPun //attached to each tetris block
                 destroyActivated = false;
             }
         }
+
+        if (this.transform.position.y < 0f) // || this.transform.position.x > 2.5f || this.transform.position.x < -2.5f
+            //|| this.transform.position.z > 2.5f || this.transform.position.z < -2.5f
+        {
+            PhotonNetwork.Destroy(this.gameObject);
+        }
     }
 
 public void Glow(SelectEnterEventArgs arg0) 
