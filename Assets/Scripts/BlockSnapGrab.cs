@@ -177,6 +177,11 @@ public void Glow(SelectEnterEventArgs arg0)
             if (childrens[i].transform.localRotation != Quaternion.identity)
                 childrens[i].transform.localRotation = Quaternion.identity; //set child to have 0 rotation (as it is in the prefab)
 
+            if (outlineComponent != null)
+            {
+                outlineComponent.OutlineColor = originalOutlineColor;
+            }
+
             childrens[i].transform.localPosition = initialLocalPositions[i - 1]; 
         }
         
